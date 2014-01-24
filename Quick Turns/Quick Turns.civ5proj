@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Deploy" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
+    <ProjectGuid>{2536f379-3982-458d-bd56-8fa2517fe63e}</ProjectGuid>
+    <Name>Quick Turns</Name>
+    <Guid>0410e638-98da-4d02-930a-daf4c3a120ef</Guid>
+    <ModVersion>1</ModVersion>
+    <Stability>Experimental</Stability>
+    <Teaser>Intelligently toggles Quick Movement and Combat during AI turns.</Teaser>
+    <Description>Intelligently toggles Quick Movement and Combat during AI turns.
+Based on jcraft's original Quick Movement mod (QMMOD).
+
+Term "AI" includes: other civilizations, city states and barbarians.
+
+Features:
+- Disable animations for AI you are at peace with.
+- Enable animations for AI you are at war with.
+
+To do:
+- Enable animations for AI you have a common enemy with.
+- Enable animations for AI that are at war with your friendly city states.</Description>
+    <Authors>gunstarpl</Authors>
+    <SpecialThanks>jcraft</SpecialThanks>
+    <AffectsSavedGames>false</AffectsSavedGames>
+    <MinCompatibleSaveVersion>0</MinCompatibleSaveVersion>
+    <SupportsSinglePlayer>true</SupportsSinglePlayer>
+    <SupportsMultiplayer>false</SupportsMultiplayer>
+    <SupportsHotSeat>true</SupportsHotSeat>
+    <SupportsMac>true</SupportsMac>
+    <AssemblyName>Quick Turns</AssemblyName>
+    <RootNamespace>Quick Turns</RootNamespace>
+    <ModReferences />
+    <ModContent>
+      <Content xmlns="">
+        <Type>InGameUIAddin</Type>
+        <Name>LuaExec</Name>
+        <Description />
+        <FileName>QuickTurns.xml</FileName>
+      </Content>
+    </ModContent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
+    <OutputPath>.</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Package Only' ">
+    <PackageMod>true</PackageMod>
+    <DeployMod>false</DeployMod>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Deploy Only' ">
+    <PackageMod>false</PackageMod>
+    <DeployMod>true</DeployMod>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="QuickTurns.lua">
+      <SubType>Lua</SubType>
+      <ImportIntoVFS>False</ImportIntoVFS>
+    </Content>
+    <Content Include="QuickTurns.xml">
+      <SubType>Lua</SubType>
+      <ImportIntoVFS>False</ImportIntoVFS>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Firaxis\ModBuddy\Civ5Mod.targets" />
+</Project>
