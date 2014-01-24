@@ -8,36 +8,7 @@
     <ModVersion>1</ModVersion>
     <Stability>Experimental</Stability>
     <Teaser>Intelligently toggles Quick Movement and Combat during AI turns.</Teaser>
-    <Description>-- Description
-
-Intelligently toggles Quick Movement and Combat during AI turns.
-Based on jcraft's original Quick Movement mod (QMMOD).
-
--- Features
-
-Term "AI" includes: other civilizations, city states and barbarians.
-
-Working:
-- Disables animations for AI you are at peace with.
-- Enables animations for AI you are at war with.
-
-Planned:
-- Enable animations for AI you have a common enemy with.
-- Enable animations for AI that are at war with your friendly city states.
-
--- Optional
-
-To further decrease turn times, use the custom Lua engine packaged with this mod that you can find in the following folder:
-"C:\Users\&lt;UserName&gt;\Documents\My Games\Sid Meier's Civilization 5\Mods\Quick Turns"
-
-Copy the "lua51_Win32.dll" file to your main game folder overwriting the existing one (make the backup of the original first):
-"X:\Steam\SteamApps\common\Sid Meier's Civilization V"
-
-Warning: This may be incompatible with some mods.
-
--- Compatibility
-
-Faster Aircraft Animations</Description>
+    <Description>-- Description[NEWLINE][NEWLINE]Intelligently toggles Quick Movement and Combat during AI turns.[NEWLINE]Based on jcraft's original Quick Movement mod (QMMOD).[NEWLINE][NEWLINE]-- Features[NEWLINE][NEWLINE]Term "AI" includes: other civilizations, city states and barbarians.[NEWLINE][NEWLINE]Working:[NEWLINE]- Disables animations for AI you are at peace with.[NEWLINE]- Enables animations for AI you are at war with.[NEWLINE][NEWLINE]Planned:[NEWLINE]- Enable animations for AI you have a common enemy with.[NEWLINE]- Enable animations for AI that are at war with your friendly city states.[NEWLINE][NEWLINE]-- Optional[NEWLINE][NEWLINE]To further decrease turn times, use the custom Lua engine packaged with this mod that you can find in the following folder:[NEWLINE]"C:\Users\&lt;UserName&gt;\Documents\My Games\Sid Meier's Civilization 5\Mods\Quick Turns"[NEWLINE][NEWLINE]Copy the "lua51_Win32.dll" file to your main game folder overwriting the existing one (make the backup of the original first):[NEWLINE]"X:\Steam\SteamApps\common\Sid Meier's Civilization V"[NEWLINE][NEWLINE]Warning: This may be incompatible with some mods.[NEWLINE][NEWLINE]-- Compatibility[NEWLINE][NEWLINE]Faster Aircraft Animations[NEWLINE]</Description>
     <Authors>gunstarpl</Authors>
     <SpecialThanks>jcraft</SpecialThanks>
     <AffectsSavedGames>false</AffectsSavedGames>
