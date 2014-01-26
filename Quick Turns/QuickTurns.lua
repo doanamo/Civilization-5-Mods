@@ -3,104 +3,94 @@
 -- by gunstarpl
 -------------------------------------------------
 
--- QuickTurnsStartGame()
-function QuickTurnsStartGame()
-	print("Called QuickTurnsStartGame()");
-	
-	-- Human loaded or started a new game.
+-- SetQuickAnimations()
+function QuickTurns_SetQuickAnimations(movement, combat)
+	-- Set quick animation options.
 	local options = { };
-	table.insert(options, { "GAMEOPTION_QUICK_MOVEMENT", false });
-	table.insert(options, { "GAMEOPTION_QUICK_COMBAT", false });
+	table.insert(options, { "GAMEOPTION_QUICK_MOVEMENT", movement });
+	table.insert(options, { "GAMEOPTION_QUICK_COMBAT", combat });
 
 	Network.SendGameOptions(options);
 end
 
--- QuickTurnsComputer()
-function QuickTurnsComputer(iPlayerID)
-	print("Called QuickTurnsComputer()");
+-- OnGameStart()
+function QuickTurns_OnGameStart()
+	print("Called OnGameStart()");
+	
+	-- Player loaded or started a new game.
+	QuickTurns_SetQuickAnimations(false, false);
+end
 
-	-- Get human and computer teams.
-	local pHuman = Players[Game.GetActivePlayer()];
-	local pHumanTeam = Teams[Game.GetActiveTeam()];
+-- OnComputerTurn()
+function QuickTurns_OnComputerTurn(iPlayerID)
+	print("Called OnComputerTurn()");
+
+	-- Get player and computer teams.
+	local pPlayer = Players[Game.GetActivePlayer()];
+	local pPlayerTeam = Teams[Game.GetActiveTeam()];
 
 	local pComputer = Players[iPlayerID];
 	local pComputerTeam = Teams[pComputer:GetTeam()];
 
-	-- Use quick turns by default unless below states apply.
-	local useQuickMovement = true;
-	local useQuickCombat = true;
+	-- Hide animations by default (in peace) unless below states apply.
+	local quickMovement = true;
+	local quickCombat = true;
 
-	-- Check if computer is at war with human.
-	if(pComputerTeam:IsAtWar(pHuman:GetTeam())) then
-		useQuickMovement = false;
-		useQuickCombat = false;
+	-- Check if computer is at war with the player.
+	if(pComputerTeam:IsAtWar(pPlayer:GetTeam())) then
+		quickMovement = false;
+		quickCombat = false;
 	end
 
-	-- Check if computer and human have a common enemy.
+	-- Check if computer and player have a common enemy.
 	-- TODO
 
-	-- Check if computer is at war with human's friendly city states.
+	-- Check if computer is at war with the player's friendly city states.
 	-- TODO
 
 	-- Set game options for current computer turn.
-	local options = { };
-	table.insert(options, { "GAMEOPTION_QUICK_MOVEMENT", useQuickMovement });
-	table.insert(options, { "GAMEOPTION_QUICK_COMBAT", useQuickCombat });
-
-	Network.SendGameOptions(options);
+	QuickTurns_SetQuickAnimations(quickMovement, quickCombat);
 end
 
--- QuickTurnsHuman()
-function QuickTurnsHuman()
-	print("Called QuickTurnsHuman()");
+-- OnPlayerTurn()
+function QuickTurns_OnPlayerTurn()
+	print("Called OnPlayerTurn()");
 
-	-- Set game options for current human turn.
-	local options = { };
-	table.insert(options, { "GAMEOPTION_QUICK_MOVEMENT", false });
-	table.insert(options, { "GAMEOPTION_QUICK_COMBAT", false });
-
-	Network.SendGameOptions(options);
+	-- Set game options for current player turn.
+	QuickTurns_SetQuickAnimations(false, false);
 end
 
--- QuickTurnsWarState()
-function QuickTurnsWarState(iTeam1, iTeam2, bWar)
-	print("Called QuickTurnsWarState()");
+-- OnWarStateChange()
+function QuickTurns_OnWarStateChange(iTeam1, iTeam2, bWar)
+	print("Called OnWarStateChange()");
 
 	-- Check war state change.
 	if(iTeam2 == Game.GetActiveTeam()) then
 		if(bWar) then
-			-- Computer declared war on the human.
-			local options = { };
-			table.insert(options, { "GAMEOPTION_QUICK_MOVEMENT", false });
-			table.insert(options, { "GAMEOPTION_QUICK_COMBAT", false });
-
-			Network.SendGameOptions(options);
+			-- Computer declared war on the player.
+			QuickTurns_SetQuickAnimations(false, false);
 		else
-			-- Computer made peace with the human.
-			local options = { };
-			table.insert(options, { "GAMEOPTION_QUICK_MOVEMENT", true });
-			table.insert(options, { "GAMEOPTION_QUICK_COMBAT", true });
-
-			Network.SendGameOptions(options);
+			-- Computer made peace with the player.
+			QuickTurns_SetQuickAnimations(true, true);
 		end
 	else
 		-- Computer declared war on other computer.
 		if(bWar) then
-			-- Check if computer and human have a common enemy.
+			-- Check if computer and player have a common enemy.
 			-- TODO
 
-			-- Check if computer is at war with human's friendly city states.
+			-- Check if computer is at war with the player's friendly city states.
 			-- TODO
 		end
 	end
 end
 
 -- Add event callbacks.
-Events.LoadScreenClose.Add(QuickTurnsStartGame);
-Events.AIProcessingStartedForPlayer.Add(QuickTurnsComputer);
-Events.ActivePlayerTurnStart.Add(QuickTurnsHuman);
-Events.RemotePlayerTurnStart.Add(QuickTurnsHuman);
-Events.WarStateChanged.Add(QuickTurnsWarState);
+Events.LoadScreenClose.Add(QuickTurns_OnGameStart);
+Events.AIProcessingStartedForPlayer.Add(QuickTurns_OnComputerTurn);
+Events.ActivePlayerTurnStart.Add(QuickTurns_OnPlayerTurn);
+Events.RemotePlayerTurnStart.Add(QuickTurns_OnPlayerTurn);
+Events.WarStateChanged.Add(QuickTurns_OnWarStateChange);
 
 -- Debug print.
 print("Quick Turns mod loaded!");
