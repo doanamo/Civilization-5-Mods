@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<GameData>
+	<Language_en_US>
+		<Row Tag="TXT_KEY_QUICKTURNS_TITLE">
+			<Text>Quick Turns</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_QUICKMOVEMENT">
+			<Text>Quick Movement</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_QUICKCOMBAT">
+			<Text>Quick Combat</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_PLAYER">
+			<Text>Player</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_PEACE">
+			<Text>Computer - Peace</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_WAR">
+			<Text>Computer - War</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_CLOSE">
+			<Text>Close</Text>
+		</Row>
+	</Language_en_US>
+</GameData>
