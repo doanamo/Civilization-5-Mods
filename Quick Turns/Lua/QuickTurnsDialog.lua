@@ -14,6 +14,8 @@ Controls.PlayerQuickMovement:SetCheck(userData.GetValue("PlayerQuickMovement") =
 Controls.PlayerQuickCombat:SetCheck(userData.GetValue("PlayerQuickCombat") == 1);
 Controls.BarbarianQuickMovement:SetCheck(userData.GetValue("BarbarianQuickMovement") == 1);
 Controls.BarbarianQuickCombat:SetCheck(userData.GetValue("BarbarianQuickCombat") == 1);
+Controls.CityStatePeaceQuickMovement:SetCheck(userData.GetValue("CityStatePeaceQuickMovement") == 1);
+Controls.CityStatePeaceQuickCombat:SetCheck(userData.GetValue("CityStatePeaceQuickCombat") == 1);
 Controls.ComputerPeaceQuickMovement:SetCheck(userData.GetValue("ComputerPeaceQuickMovement") == 1);
 Controls.ComputerPeaceQuickCombat:SetCheck(userData.GetValue("ComputerPeaceQuickCombat") == 1);
 Controls.ComputerWarQuickMovement:SetCheck(userData.GetValue("ComputerWarQuickMovement") == 1);
@@ -78,6 +80,18 @@ Controls.BarbarianQuickMovement:RegisterCheckHandler(
 Controls.BarbarianQuickCombat:RegisterCheckHandler(
 	function(bIsChecked)
 		userData.SetValue("BarbarianQuickCombat", bIsChecked);
+	end
+);
+
+Controls.CityStatePeaceQuickMovement:RegisterCheckHandler(
+	function(bIsChecked)
+		userData.SetValue("CityStatePeaceQuickMovement", bIsChecked);
+	end
+);
+
+Controls.CityStatePeaceQuickCombat:RegisterCheckHandler(
+	function(bIsChecked)
+		userData.SetValue("CityStatePeaceQuickCombat", bIsChecked);
 	end
 );
 

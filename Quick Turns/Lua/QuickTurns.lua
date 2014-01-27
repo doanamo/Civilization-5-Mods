@@ -23,6 +23,8 @@ QuickTurns_SetDefaultOption("PlayerQuickMovement", 0);
 QuickTurns_SetDefaultOption("PlayerQuickCombat", 0);
 QuickTurns_SetDefaultOption("BarbarianQuickMovement", 0);
 QuickTurns_SetDefaultOption("BarbarianQuickCombat", 0);
+QuickTurns_SetDefaultOption("CityStatePeaceQuickMovement", 1);
+QuickTurns_SetDefaultOption("CityStatePeaceQuickCombat", 1);
 QuickTurns_SetDefaultOption("ComputerPeaceQuickMovement", 1);
 QuickTurns_SetDefaultOption("ComputerPeaceQuickCombat", 1);
 QuickTurns_SetDefaultOption("ComputerWarQuickMovement", 0);
@@ -74,13 +76,23 @@ function QuickTurns_OnComputerTurn(iPlayerID)
 			userData.GetValue("BarbarianQuickCombat") == 1
 		);
 
-		-- Don't process as a civilization.
+		-- Don't process as a regular computer.
 		return;
 	end
 
-	-- Toggle animations for peace unless below states apply.
-	local quickMovement = userData.GetValue("ComputerPeaceQuickMovement") == 1;
-	local quickCombat = userData.GetValue("ComputerPeaceQuickCombat") == 1;
+	-- Toggle animations for peace by default.
+	local quickMovement = true;
+	local quickCombat = true;
+
+	if(pComputer:IsMinorCiv()) then
+		-- Peace settings for city states.
+		quickMovement = userData.GetValue("CityStatePeaceQuickMovement") == 1;
+		quickCombat = userData.GetValue("CityStatePeaceQuickCombat") == 1;
+	else
+		-- Peace settings for computer civilizations.
+		quickMovement = userData.GetValue("ComputerPeaceQuickMovement") == 1;
+		quickCombat = userData.GetValue("ComputerPeaceQuickCombat") == 1;
+	end
 
 	-- Check if computer is at war with the player.
 	if(pComputerTeam:IsAtWar(pPlayer:GetTeam())) then
@@ -131,6 +143,8 @@ function QuickTurns_OnWarStateChange(iTeam1, iTeam2, bWar)
 			);
 		else
 			-- Computer made peace with the player.
+			-- City state war changes are processed during player
+			-- and computer turns. No need to handle them here.
 			QuickTurns_SetQuickAnimations(
 				userData.GetValue("ComputerPeaceQuickMovement") == 1,
 				userData.GetValue("ComputerPeaceQuickCombat") == 1
