@@ -12,6 +12,8 @@ ContextPtr:SetHide(true);
 -- Set default check box states.
 Controls.PlayerQuickMovement:SetCheck(userData.GetValue("PlayerQuickMovement") == 1);
 Controls.PlayerQuickCombat:SetCheck(userData.GetValue("PlayerQuickCombat") == 1);
+Controls.BarbarianQuickMovement:SetCheck(userData.GetValue("BarbarianQuickMovement") == 1);
+Controls.BarbarianQuickCombat:SetCheck(userData.GetValue("BarbarianQuickCombat") == 1);
 Controls.ComputerPeaceQuickMovement:SetCheck(userData.GetValue("ComputerPeaceQuickMovement") == 1);
 Controls.ComputerPeaceQuickCombat:SetCheck(userData.GetValue("ComputerPeaceQuickCombat") == 1);
 Controls.ComputerWarQuickMovement:SetCheck(userData.GetValue("ComputerWarQuickMovement") == 1);
@@ -39,6 +41,21 @@ end
 
 Controls.CloseButton:RegisterCallback(Mouse.eLClick, CloseDialog);
 
+-- HandleInput()
+function HandleInput(uiMsg, wParam, lParam)
+	-- Close dialog with ESC key.
+	if(uiMsg == KeyEvents.KeyDown) then
+		if(wParam == Keys.VK_ESCAPE) then
+			CloseDialog();
+		end
+	end
+
+	-- Block input.
+	return true;
+end
+
+ContextPtr:SetInputHandler(HandleInput);
+
 -- Quick animation check box callbacks.
 Controls.PlayerQuickMovement:RegisterCheckHandler(
 	function(bIsChecked)
@@ -49,6 +66,18 @@ Controls.PlayerQuickMovement:RegisterCheckHandler(
 Controls.PlayerQuickCombat:RegisterCheckHandler(
 	function(bIsChecked)
 		userData.SetValue("PlayerQuickCombat", bIsChecked);
+	end
+);
+
+Controls.BarbarianQuickMovement:RegisterCheckHandler(
+	function(bIsChecked)
+		userData.SetValue("BarbarianQuickMovement", bIsChecked);
+	end
+);
+
+Controls.BarbarianQuickCombat:RegisterCheckHandler(
+	function(bIsChecked)
+		userData.SetValue("BarbarianQuickCombat", bIsChecked);
 	end
 );
 

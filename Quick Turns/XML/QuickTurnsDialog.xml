@@ -17,6 +17,15 @@
 			</Container>
 
 			<Container Anchor="L,C" Size="10000,30">
+				<Label Anchor="L,C" Offset="0,0" Font="TwCenMT20" FontStyle="Base" ColorSet="Beige_Black_Alpha" String="TXT_KEY_QUICKTURNS_BARBARIAN"/>
+
+				<Stack Anchor="L,C" Offset="250,0" StackGrowth="Right" Padding="140">
+					<CheckBox ID="BarbarianQuickMovement" IsChecked="0" TextAnchor="R,C" String="TXT_KEY_QUICKTURNS_QUICKMOVEMENT" Style="SquareCheck" Font="TwCenMT18" ColorSet="Beige_Black_Alpha" FontStyle="Base"/>
+					<CheckBox ID="BarbarianQuickCombat" IsChecked="0" TextAnchor="R,C" String="TXT_KEY_QUICKTURNS_QUICKCOMBAT" Style="SquareCheck" Font="TwCenMT18" ColorSet="Beige_Black_Alpha" FontStyle="Base"/>
+				</Stack>
+			</Container>
+
+			<Container Anchor="L,C" Size="10000,30">
 				<Label Anchor="L,C" Offset="0,0" Font="TwCenMT20" FontStyle="Base" ColorSet="Beige_Black_Alpha" String="TXT_KEY_QUICKTURNS_COMPUTER_PEACE"/>
 
 				<Stack Anchor="L,C" Offset="250,0" StackGrowth="Right" Padding="140">

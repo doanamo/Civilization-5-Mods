@@ -7,7 +7,7 @@
 MapModData.QuickTurns = { };
 MapModData.QuickTurns.IsPlayerTurn = true;
 
--- Create a persistent user data.
+-- Create persistent user data.
 MapModData.QuickTurns.UserData = Modding.OpenUserData("gunstarpl_QuickTurns", 1);
 
 local userData = MapModData.QuickTurns.UserData;
@@ -21,6 +21,8 @@ end
 
 QuickTurns_SetDefaultOption("PlayerQuickMovement", 0);
 QuickTurns_SetDefaultOption("PlayerQuickCombat", 0);
+QuickTurns_SetDefaultOption("BarbarianQuickMovement", 0);
+QuickTurns_SetDefaultOption("BarbarianQuickCombat", 0);
 QuickTurns_SetDefaultOption("ComputerPeaceQuickMovement", 1);
 QuickTurns_SetDefaultOption("ComputerPeaceQuickCombat", 1);
 QuickTurns_SetDefaultOption("ComputerWarQuickMovement", 0);
@@ -65,6 +67,17 @@ function QuickTurns_OnComputerTurn(iPlayerID)
 	local pComputer = Players[iPlayerID];
 	local pComputerTeam = Teams[pComputer:GetTeam()];
 
+	-- Check if computer is barbarian.
+	if(pComputer:IsBarbarian()) then
+		QuickTurns_SetQuickAnimations(
+			userData.GetValue("BarbarianQuickMovement") == 1, 
+			userData.GetValue("BarbarianQuickCombat") == 1
+		);
+
+		-- Don't process as a civilization.
+		return;
+	end
+
 	-- Toggle animations for peace unless below states apply.
 	local quickMovement = userData.GetValue("ComputerPeaceQuickMovement") == 1;
 	local quickCombat = userData.GetValue("ComputerPeaceQuickCombat") == 1;
@@ -82,7 +95,7 @@ function QuickTurns_OnComputerTurn(iPlayerID)
 	end
 
 	-- Set quick animations for current computer turn.
-	QuickTurns_SetQuickAnimations(quickMovement,quickCombat);
+	QuickTurns_SetQuickAnimations(quickMovement, quickCombat);
 end
 
 Events.AIProcessingStartedForPlayer.Add(QuickTurns_OnComputerTurn);

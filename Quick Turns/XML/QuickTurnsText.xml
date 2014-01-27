@@ -18,6 +18,10 @@
 			<Text>Player</Text>
 		</Row>
 
+		<Row Tag="TXT_KEY_QUICKTURNS_BARBARIAN">
+			<Text>Barbarian</Text>
+		</Row>
+
 		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_PEACE">
 			<Text>Computer - Peace</Text>
 		</Row>
