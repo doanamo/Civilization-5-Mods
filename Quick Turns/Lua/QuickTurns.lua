@@ -3,9 +3,13 @@
 -- by gunstarpl
 -------------------------------------------------
 
+--
+-- Defines
+--
+
 -- Global mod data.
 MapModData.QuickTurns = { };
-MapModData.QuickTurns.IsPlayerTurn = true;
+MapModData.QuickTurns.IsPlayerTurn = false;
 
 -- Create persistent user data.
 MapModData.QuickTurns.UserData = Modding.OpenUserData("gunstarpl_QuickTurns", 1);
@@ -30,8 +34,13 @@ QuickTurns_SetDefaultOption("ComputerPeaceQuickCombat", 1);
 QuickTurns_SetDefaultOption("ComputerWarQuickMovement", 0);
 QuickTurns_SetDefaultOption("ComputerWarQuickCombat", 0);
 
+--
 -- SetQuickAnimations()
+--
+
 function QuickTurns_SetQuickAnimations(movement, combat)
+	print("Called SetQuickAnimations(" .. tostring(movement) .. ", " .. tostring(combat) .. ")");
+
 	-- Set quick animation options.
 	local options = { };
 	table.insert(options, { "GAMEOPTION_QUICK_MOVEMENT", movement });
@@ -40,22 +49,13 @@ function QuickTurns_SetQuickAnimations(movement, combat)
 	Network.SendGameOptions(options);
 end
 
+-- Add a global method.
 MapModData.QuickTurns.SetQuickAnimations = QuickTurns_SetQuickAnimations;
 
--- OnGameStart()
-function QuickTurns_OnGameStart()
-	print("Called OnGameStart()");
-	
-	-- Player loaded or started a new game.
-	QuickTurns_SetQuickAnimations(
-		userData.GetValue("PlayerQuickMovement") == 1, 
-		userData.GetValue("PlayerQuickCombat") == 1
-	);
-end
-
-Events.LoadScreenClose.Add(QuickTurns_OnGameStart);
-
+--
 -- OnComputerTurn()
+--
+
 function QuickTurns_OnComputerTurn(iPlayerID)
 	print("Called OnComputerTurn()");
 
@@ -110,9 +110,13 @@ function QuickTurns_OnComputerTurn(iPlayerID)
 	QuickTurns_SetQuickAnimations(quickMovement, quickCombat);
 end
 
+-- Call on computer turn processing.
 Events.AIProcessingStartedForPlayer.Add(QuickTurns_OnComputerTurn);
 
+--
 -- OnPlayerTurn()
+--
+
 function QuickTurns_OnPlayerTurn()
 	print("Called OnPlayerTurn()");
 
@@ -126,10 +130,16 @@ function QuickTurns_OnPlayerTurn()
 	);
 end
 
+-- Call when player turn starts.
 Events.ActivePlayerTurnStart.Add(QuickTurns_OnPlayerTurn);
-Events.RemotePlayerTurnStart.Add(QuickTurns_OnPlayerTurn);
 
+-- Call when player loads or starts a new game.
+Events.LoadScreenClose.Add(QuickTurns_OnPlayerTurn);
+
+--
 -- OnWarStateChange()
+--
+
 function QuickTurns_OnWarStateChange(iTeam1, iTeam2, bWar)
 	print("Called OnWarStateChange()");
 
@@ -153,6 +163,7 @@ function QuickTurns_OnWarStateChange(iTeam1, iTeam2, bWar)
 	end
 end
 
+-- Handle war state changes during turns.
 Events.WarStateChanged.Add(QuickTurns_OnWarStateChange);
 
 -- Debug print.
