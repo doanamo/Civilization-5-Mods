@@ -35,11 +35,25 @@ QuickTurns_SetDefaultOption("ComputerWarQuickMovement", 0);
 QuickTurns_SetDefaultOption("ComputerWarQuickCombat", 0);
 
 --
+-- Helpers
+--
+
+-- Debug print method.
+local DebugEnabled = false;
+local DebugPrint = nil;
+
+if(DebugEnabled) then
+	DebugPrint = function(Text) print(Text) end;
+else
+	DebugPrint = function(Text) end;
+end
+
+--
 -- SetQuickAnimations()
 --
 
 function QuickTurns_SetQuickAnimations(movement, combat)
-	print("Called SetQuickAnimations(" .. tostring(movement) .. ", " .. tostring(combat) .. ")");
+	DebugPrint("Called SetQuickAnimations(" .. tostring(movement) .. ", " .. tostring(combat) .. ")");
 
 	-- Set quick animation options.
 	local options = { };
@@ -57,7 +71,7 @@ MapModData.QuickTurns.SetQuickAnimations = QuickTurns_SetQuickAnimations;
 --
 
 function QuickTurns_OnComputerTurn(iPlayerID)
-	print("Called OnComputerTurn()");
+	DebugPrint("Called OnComputerTurn()");
 
 	-- Set non player turn state.
 	MapModData.QuickTurns.IsPlayerTurn = false;
@@ -118,7 +132,7 @@ Events.AIProcessingStartedForPlayer.Add(QuickTurns_OnComputerTurn);
 --
 
 function QuickTurns_OnPlayerTurn()
-	print("Called OnPlayerTurn()");
+	DebugPrint("Called OnPlayerTurn()");
 
 	-- Set player turn state.
 	MapModData.QuickTurns.IsPlayerTurn = true;
@@ -141,7 +155,7 @@ Events.LoadScreenClose.Add(QuickTurns_OnPlayerTurn);
 --
 
 function QuickTurns_OnWarStateChange(iTeam1, iTeam2, bWar)
-	print("Called OnWarStateChange()");
+	DebugPrint("Called OnWarStateChange()");
 
 	-- Check war state change.
 	if(iTeam2 == Game.GetActiveTeam()) then
@@ -167,4 +181,4 @@ end
 Events.WarStateChanged.Add(QuickTurns_OnWarStateChange);
 
 -- Debug print.
-print("Quick Turns mod loaded!");
+DebugPrint("Quick Turns mod loaded!");
