@@ -46,6 +46,14 @@
 			<Text>Quick animations for city state turns. These settings apply during peace with the player, on war they switch to "Computer - War" settings.</Text>
 		</Row>
 
+		<Row Tag="TXT_KEY_QUICKTURNS_CITYSTATE_ALLY">
+			<Text>City State - Ally</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_CITYSTATE_ALLY_TOOLTIP">
+			<Text>Quick animations for allied city state turns. These settings apply when a city state is allied with the player, on war they switch to "Computer - War" settings.</Text>
+		</Row>
+
 		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_PEACE">
 			<Text>Computer - Peace</Text>
 		</Row>
@@ -62,12 +70,36 @@
 			<Text>Quick animations for computer civilization and city state turns. These settings apply during war with the player.</Text>
 		</Row>
 
+		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_COMMON_ENEMY">
+			<Text>Computer - Common Enemy</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_COMMON_ENEMY_TOOLTIP">
+			<Text>If enabled, sets the "Computer - War" settings for computer civilizations or city states that share an enemy with the player.</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_AGGRESOR">
+			<Text>Computer - Aggresor</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_AGGRESOR_TOOLTIP">
+			<Text>If enabled, sets the "Computer - War" settings for computer civilizations that are at war with player's allied city states.</Text>
+		</Row>
+
 		<Row Tag="TXT_KEY_QUICKTURNS_HOVER_INFO">
-			<Text>Hover over text labels for more detailed information.</Text>
+			<Text>Hover cursor over text labels for more detailed information.</Text>
 		</Row>
 
 		<Row Tag="TXT_KEY_QUICKTURNS_HOVER_INFO_TOOLTIP">
 			<Text>Yes! Exactly like this.</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_ENABLED">
+			<Text>Enabled</Text>
+		</Row>
+
+		<Row Tag="TXT_KEY_QUICKTURNS_ENABLED_TOOLTIP">
+			<Text>Check to enable this setting.</Text>
 		</Row>
 
 		<Row Tag="TXT_KEY_QUICKTURNS_CLOSE">

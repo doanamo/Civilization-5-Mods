@@ -3,23 +3,33 @@
 -- by gunstarpl
 -------------------------------------------------
 
--- Get persistent user data.
-local userData = MapModData.QuickTurns.UserData;
-
 -- Hide dialog by default.
 ContextPtr:SetHide(true);
 
 -- Set default check box states.
-Controls.PlayerQuickMovement:SetCheck(userData.GetValue("PlayerQuickMovement") == 1);
-Controls.PlayerQuickCombat:SetCheck(userData.GetValue("PlayerQuickCombat") == 1);
-Controls.BarbarianQuickMovement:SetCheck(userData.GetValue("BarbarianQuickMovement") == 1);
-Controls.BarbarianQuickCombat:SetCheck(userData.GetValue("BarbarianQuickCombat") == 1);
-Controls.CityStatePeaceQuickMovement:SetCheck(userData.GetValue("CityStatePeaceQuickMovement") == 1);
-Controls.CityStatePeaceQuickCombat:SetCheck(userData.GetValue("CityStatePeaceQuickCombat") == 1);
-Controls.ComputerPeaceQuickMovement:SetCheck(userData.GetValue("ComputerPeaceQuickMovement") == 1);
-Controls.ComputerPeaceQuickCombat:SetCheck(userData.GetValue("ComputerPeaceQuickCombat") == 1);
-Controls.ComputerWarQuickMovement:SetCheck(userData.GetValue("ComputerWarQuickMovement") == 1);
-Controls.ComputerWarQuickCombat:SetCheck(userData.GetValue("ComputerWarQuickCombat") == 1);
+Controls.PlayerQuickMovement:SetCheck(MapModData.QuickTurns.GetOptionValue("PlayerQuickMovement") == 1);
+Controls.PlayerQuickCombat:SetCheck(MapModData.QuickTurns.GetOptionValue("PlayerQuickCombat") == 1);
+Controls.BarbarianQuickMovement:SetCheck(MapModData.QuickTurns.GetOptionValue("BarbarianQuickMovement") == 1);
+Controls.BarbarianQuickCombat:SetCheck(MapModData.QuickTurns.GetOptionValue("BarbarianQuickCombat") == 1);
+Controls.CityStatePeaceQuickMovement:SetCheck(MapModData.QuickTurns.GetOptionValue("CityStatePeaceQuickMovement") == 1);
+Controls.CityStatePeaceQuickCombat:SetCheck(MapModData.QuickTurns.GetOptionValue("CityStatePeaceQuickCombat") == 1);
+Controls.CityStateAllyQuickMovement:SetCheck(MapModData.QuickTurns.GetOptionValue("CityStateAllyQuickMovement") == 1);
+Controls.CityStateAllyQuickCombat:SetCheck(MapModData.QuickTurns.GetOptionValue("CityStateAllyQuickCombat") == 1);
+Controls.ComputerPeaceQuickMovement:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerPeaceQuickMovement") == 1);
+Controls.ComputerPeaceQuickCombat:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerPeaceQuickCombat") == 1);
+Controls.ComputerWarQuickMovement:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerWarQuickMovement") == 1);
+Controls.ComputerWarQuickCombat:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerWarQuickCombat") == 1);
+Controls.ComputerCommonEnemy:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerCommonEnemy") == 1);
+Controls.ComputerAggresor:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerAggresor") == 1);
+
+-- BoolToInteger()
+function BoolToInteger(value)
+	if(value) then
+		return 1;
+	else
+		return 0;
+	end
+end
 
 -- OpenDialog()
 function OpenDialog()
@@ -35,8 +45,8 @@ function CloseDialog()
 	-- If player turn, apply some of the changed settings.
 	if(MapModData.QuickTurns.IsPlayerTurn) then
 		MapModData.QuickTurns.SetQuickAnimations(
-			userData.GetValue("PlayerQuickMovement") == 1, 
-			userData.GetValue("PlayerQuickCombat") == 1
+			MapModData.QuickTurns.GetOptionValue("PlayerQuickMovement") == 1, 
+			MapModData.QuickTurns.GetOptionValue("PlayerQuickCombat") == 1
 		);
 	end
 end
@@ -61,61 +71,85 @@ ContextPtr:SetInputHandler(HandleInput);
 -- Quick animation check box callbacks.
 Controls.PlayerQuickMovement:RegisterCheckHandler(
 	function(bIsChecked)
-		userData.SetValue("PlayerQuickMovement", bIsChecked);
+		MapModData.QuickTurns.SetOptionValue("PlayerQuickMovement", BoolToInteger(bIsChecked));
 	end
 );
 
 Controls.PlayerQuickCombat:RegisterCheckHandler(
 	function(bIsChecked)
-		userData.SetValue("PlayerQuickCombat", bIsChecked);
+		MapModData.QuickTurns.SetOptionValue("PlayerQuickCombat", BoolToInteger(bIsChecked));
 	end
 );
 
 Controls.BarbarianQuickMovement:RegisterCheckHandler(
 	function(bIsChecked)
-		userData.SetValue("BarbarianQuickMovement", bIsChecked);
+		MapModData.QuickTurns.SetOptionValue("BarbarianQuickMovement", BoolToInteger(bIsChecked));
 	end
 );
 
 Controls.BarbarianQuickCombat:RegisterCheckHandler(
 	function(bIsChecked)
-		userData.SetValue("BarbarianQuickCombat", bIsChecked);
+		MapModData.QuickTurns.SetOptionValue("BarbarianQuickCombat", BoolToInteger(bIsChecked));
 	end
 );
 
 Controls.CityStatePeaceQuickMovement:RegisterCheckHandler(
 	function(bIsChecked)
-		userData.SetValue("CityStatePeaceQuickMovement", bIsChecked);
+		MapModData.QuickTurns.SetOptionValue("CityStatePeaceQuickMovement", BoolToInteger(bIsChecked));
 	end
 );
 
 Controls.CityStatePeaceQuickCombat:RegisterCheckHandler(
 	function(bIsChecked)
-		userData.SetValue("CityStatePeaceQuickCombat", bIsChecked);
+		MapModData.QuickTurns.SetOptionValue("CityStatePeaceQuickCombat", BoolToInteger(bIsChecked));
+	end
+);
+
+Controls.CityStateAllyQuickMovement:RegisterCheckHandler(
+	function(bIsChecked)
+		MapModData.QuickTurns.SetOptionValue("CityStateAllyQuickMovement", BoolToInteger(bIsChecked));
+	end
+);
+
+Controls.CityStateAllyQuickCombat:RegisterCheckHandler(
+	function(bIsChecked)
+		MapModData.QuickTurns.SetOptionValue("CityStateAllyQuickCombat", BoolToInteger(bIsChecked));
 	end
 );
 
 Controls.ComputerPeaceQuickMovement:RegisterCheckHandler(
 	function(bIsChecked)
-		userData.SetValue("ComputerPeaceQuickMovement", bIsChecked);
+		MapModData.QuickTurns.SetOptionValue("ComputerPeaceQuickMovement", BoolToInteger(bIsChecked));
 	end
 );
 
 Controls.ComputerPeaceQuickCombat:RegisterCheckHandler(
 	function(bIsChecked)
-		userData.SetValue("ComputerPeaceQuickCombat", bIsChecked);
+		MapModData.QuickTurns.SetOptionValue("ComputerPeaceQuickCombat", BoolToInteger(bIsChecked));
 	end
 );
 
 Controls.ComputerWarQuickMovement:RegisterCheckHandler(
 	function(bIsChecked)
-		userData.SetValue("ComputerWarQuickMovement", bIsChecked);
+		MapModData.QuickTurns.SetOptionValue("ComputerWarQuickMovement", BoolToInteger(bIsChecked));
 	end
 );
 
 Controls.ComputerWarQuickCombat:RegisterCheckHandler(
 	function(bIsChecked)
-		userData.SetValue("ComputerWarQuickCombat", bIsChecked);
+		MapModData.QuickTurns.SetOptionValue("ComputerWarQuickCombat", BoolToInteger(bIsChecked));
+	end
+);
+
+Controls.ComputerCommonEnemy:RegisterCheckHandler(
+	function(bIsChecked)
+		MapModData.QuickTurns.SetOptionValue("ComputerCommonEnemy", BoolToInteger(bIsChecked));
+	end
+);
+
+Controls.ComputerAggresor:RegisterCheckHandler(
+	function(bIsChecked)
+		MapModData.QuickTurns.SetOptionValue("ComputerAggresor", BoolToInteger(bIsChecked));
 	end
 );
 
