@@ -78,11 +78,11 @@
 			<Text>If enabled, sets the "Computer - War" settings for computer civilizations or city states that share an enemy with the player.</Text>
 		</Row>
 
-		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_AGGRESOR">
+		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_AGGRESSOR">
 			<Text>Computer - Aggressor</Text>
 		</Row>
 
-		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_AGGRESOR_TOOLTIP">
+		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_AGGRESSOR_TOOLTIP">
 			<Text>If enabled, sets the "Computer - War" settings for computer civilizations that are at war with player's allied city states.</Text>
 		</Row>
 

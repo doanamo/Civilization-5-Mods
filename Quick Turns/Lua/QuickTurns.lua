@@ -71,7 +71,7 @@ QuickTurns_SetDefaultOption("ComputerPeaceQuickCombat", 1);
 QuickTurns_SetDefaultOption("ComputerWarQuickMovement", 0);
 QuickTurns_SetDefaultOption("ComputerWarQuickCombat", 0);
 QuickTurns_SetDefaultOption("ComputerCommonEnemy", 1);
-QuickTurns_SetDefaultOption("ComputerAggresor", 1);
+QuickTurns_SetDefaultOption("ComputerAggressor", 1);
 
 --
 -- Helpers
@@ -106,15 +106,15 @@ end
 MapModData.QuickTurns.SetQuickAnimations = QuickTurns_SetQuickAnimations;
 
 --
--- CheckAggresor()
+-- CheckAggressor()
 --
 
-function QuickTurns_CheckAggresor(iCurrent)
+function QuickTurns_CheckAggressor(iCurrent)
 	local pComputer = Players[iCurrent];
 	local tComputer = Teams[pComputer:GetTeam()];
 
 	-- Check if computer is at war with the player's allied city states.
-	if(QuickTurns_GetOptionValue("ComputerAggresor") == 1 and not pComputer:IsMinorCiv()) then
+	if(QuickTurns_GetOptionValue("ComputerAggressor") == 1 and not pComputer:IsMinorCiv()) then
 		for iTarget = GameDefines.MAX_MAJOR_CIVS, GameDefines.MAX_PLAYERS - 1, 1 do
 			local pTarget = Players[iTarget];
 			local tTarget = Teams[pTarget:GetTeam()];
@@ -199,7 +199,7 @@ function QuickTurns_OnComputerTurn(iCurrent)
 	-- Check if it's actually the player.
 	if(iCurrent == Game.GetActivePlayer()) then
 		-- Call the player function just in case, even if a second time.
-		QuickTurns_OnPlayerTurn();
+		--QuickTurns_OnPlayerTurn();
 		return;
 	end
 	
@@ -254,7 +254,7 @@ function QuickTurns_OnComputerTurn(iCurrent)
 		return;
 	else
 		-- Check if computer is at war with the player's allied city states.
-		if(QuickTurns_CheckAggresor(iCurrent)) then
+		if(QuickTurns_CheckAggressor(iCurrent)) then
 			return;
 		end
 
@@ -320,7 +320,7 @@ function QuickTurns_OnWarStateChange(iTeam1, iTeam2, bWar)
 		return;
 	else
 		-- Check if computer is at war with the player's allied city states.
-		if(QuickTurns_CheckAggresor(iTeam1)) then
+		if(QuickTurns_CheckAggressor(iTeam1)) then
 			return;
 		end
 

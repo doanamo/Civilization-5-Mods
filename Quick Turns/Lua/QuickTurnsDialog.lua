@@ -20,7 +20,7 @@ Controls.ComputerPeaceQuickCombat:SetCheck(MapModData.QuickTurns.GetOptionValue(
 Controls.ComputerWarQuickMovement:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerWarQuickMovement") == 1);
 Controls.ComputerWarQuickCombat:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerWarQuickCombat") == 1);
 Controls.ComputerCommonEnemy:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerCommonEnemy") == 1);
-Controls.ComputerAggresor:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerAggresor") == 1);
+Controls.ComputerAggressor:SetCheck(MapModData.QuickTurns.GetOptionValue("ComputerAggressor") == 1);
 
 -- BoolToInteger()
 function BoolToInteger(value)
@@ -147,9 +147,9 @@ Controls.ComputerCommonEnemy:RegisterCheckHandler(
 	end
 );
 
-Controls.ComputerAggresor:RegisterCheckHandler(
+Controls.ComputerAggressor:RegisterCheckHandler(
 	function(bIsChecked)
-		MapModData.QuickTurns.SetOptionValue("ComputerAggresor", BoolToInteger(bIsChecked));
+		MapModData.QuickTurns.SetOptionValue("ComputerAggressor", BoolToInteger(bIsChecked));
 	end
 );
 
