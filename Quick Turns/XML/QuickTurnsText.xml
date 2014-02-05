@@ -51,7 +51,7 @@
 		</Row>
 
 		<Row Tag="TXT_KEY_QUICKTURNS_CITYSTATE_ALLY_TOOLTIP">
-			<Text>Quick animations for allied city state turns. These settings apply when a city state is allied with the player, on war they switch to "Computer - War" settings.</Text>
+			<Text>Quick animations for allied city state turns. These settings apply when a city state that's allied with the player is at war, on peace they switch to "City State - Peace" settings (unless others apply).</Text>
 		</Row>
 
 		<Row Tag="TXT_KEY_QUICKTURNS_COMPUTER_PEACE">

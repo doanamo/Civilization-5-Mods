@@ -221,18 +221,41 @@ function QuickTurns_OnComputerTurn(iCurrent)
 	local quickCombat = true;
 
 	if(pComputer:IsMinorCiv()) then
-		-- Default settings for city states.
 		DebugPrint("Is a city state.");
 
+		-- Default city state ally settings.
 		if(pComputer:IsAllies(Game.GetActivePlayer())) then
 			DebugPrint("Is allied with the player.");
 
-			quickMovement = QuickTurns_GetOptionValue("CityStateAllyQuickMovement") == 1;
-			quickCombat = QuickTurns_GetOptionValue("CityStateAllyQuickCombat") == 1;
-		else
-			quickMovement = QuickTurns_GetOptionValue("CityStatePeaceQuickMovement") == 1;
-			quickCombat = QuickTurns_GetOptionValue("CityStatePeaceQuickCombat") == 1;
+			-- Go through every city state and civilization.
+			for iTarget = 0, GameDefines.MAX_PLAYERS - 1, 1 do
+				local pTarget = Players[iTarget];
+
+				-- Check if target is valid then proceed.
+				-- Also make sure target isn't another city state.
+				-- There's is a bug where a city state can be at war with another city state idefinitely for no reason.
+				if(iTarget ~= iCurrent and iTarget ~= Game.GetActivePlayer() and pTarget:IsAlive() and not pTarget:IsMinorCiv() and not pTarget:IsBarbarian()) then
+					DebugPrint("Checking if at war with: " .. tostring(iTarget));
+
+					-- Only set quick animations for allied city states when at war with other civilizations.
+					if(tComputer:IsAtWar(pTarget:GetTeam())) then
+						DebugPrint("Allied city state is at war!");
+
+						QuickTurns_SetQuickAnimations(
+							QuickTurns_GetOptionValue("CityStateAllyQuickMovement") == 1,
+							QuickTurns_GetOptionValue("CityStateAllyQuickCombat") == 1
+						);
+
+						-- No need to process further.
+						return;
+					end
+				end
+			end
 		end
+
+		-- Default city state peace settings.
+		quickMovement = QuickTurns_GetOptionValue("CityStatePeaceQuickMovement") == 1;
+		quickCombat = QuickTurns_GetOptionValue("CityStatePeaceQuickCombat") == 1;
 	else
 		-- Default settings for computer civilizations.
 		DebugPrint("Is a civilization.");
