@@ -10,6 +10,7 @@
 -- Global mod data.
 MapModData.QuickTurns = { };
 MapModData.QuickTurns.IsPlayerTurn = false;
+MapModData.QuickTurns.DialogOpen = false;
 
 -- Create persistent user data.
 MapModData.QuickTurns.UserData = Modding.OpenUserData("gunstarpl_QuickTurns", 1);

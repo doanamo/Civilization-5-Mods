@@ -35,12 +35,18 @@ end
 function OpenDialog()
 	-- Show the dialog.
 	ContextPtr:SetHide(false);
+
+	-- Set dialog state.
+	MapModData.QuickTurns.DialogOpen = true;
 end
 
 -- CloseDialog()
 function CloseDialog()
 	-- Hide the dialog.
 	ContextPtr:SetHide(true);
+
+	-- Set dialog state.
+	MapModData.QuickTurns.DialogOpen = false;
 
 	-- If player turn, apply some of the changed settings.
 	if(MapModData.QuickTurns.IsPlayerTurn) then
@@ -55,6 +61,11 @@ Controls.CloseButton:RegisterCallback(Mouse.eLClick, CloseDialog);
 
 -- HandleInput()
 function HandleInput(uiMsg, wParam, lParam)
+	-- Check if the dialog is open.
+	if(not MapModData.QuickTurns.DialogOpen) then
+		return false;
+	end
+
 	-- Close dialog with ESC key.
 	if(uiMsg == KeyEvents.KeyDown) then
 		if(wParam == Keys.VK_ESCAPE) then
