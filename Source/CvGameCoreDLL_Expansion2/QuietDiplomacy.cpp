@@ -22,8 +22,16 @@ void QuietDiplomacy::CreateNotification(CvPlayer* human, CvPlayer* computer, con
 		szSummary += "Message from ";
 		szSummary += computer->getName();
 
-		int x = computer->getCapitalCity()->getX();
-		int y = computer->getCapitalCity()->getY();
+		int x = -1;
+		int y = -1;
+
+		CvCity* computerCapital = computer->getCapitalCity();
+
+		if(computerCapital->isRevealed(human->getTeam(), false))
+		{
+			x = computerCapital->getX();
+			y = computerCapital->getY();
+		}
 
 		pNotifications->Add(NOTIFICATION_MINOR, szMessage.c_str(), szSummary.c_str(), x, y, -1);
 	}
