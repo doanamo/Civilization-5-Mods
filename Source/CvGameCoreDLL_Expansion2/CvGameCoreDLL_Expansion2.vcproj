@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="CvGameCoreDLL_Expansion2"
 	ProjectGUID="{F58F230D-EE4A-40E0-91D5-93626E790055}"
 	RootNamespace="CvGameCoreDLL_Expansion2"
@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="CvWorldBuilderMapWin32.lib CvGameCoreDLLUtilWin32.lib CvLocalizationWin32.lib CvGameDatabaseWin32.lib FireWorksWin32.lib FLuaWin32.lib lua51_Win32.lib winmm.lib"
-				OutputFile="$(OutDir)\$(ProjectName)$(PlatformName)$(ConfigurationName).dll"
+				OutputFile="$(OutDir)\CvGameCore_Expansion2.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="false"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\CvWorldBuilderMap\lib\&quot;;&quot;$(SolutionDir)\CvGameCoreDLLUtil\lib\&quot;;&quot;$(SolutionDir)\CvLocalization\lib\&quot;;&quot;$(SolutionDir)\CvGameDatabase\lib\&quot;;&quot;$(SolutionDir)FirePlace\lib\&quot;;&quot;$(SolutionDir)ThirdPartyLibs\Lua51\lib\&quot;"

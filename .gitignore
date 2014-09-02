@@ -1,3 +1,7 @@
 Build/
 Packages/
 *.civ5suo
+Source/BuildOutput/
+Source/BuildTemp/
+*.ncb
+*.suo
