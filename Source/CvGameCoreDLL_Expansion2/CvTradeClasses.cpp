@@ -17,6 +17,10 @@
 #include "CvNotifications.h"
 #include "cvStopWatch.h"
 #include "CvCityManager.h"
+#if defined(MOD_TRADE_WONDER_RESOURCE_ROUTES)
+#include "CvInternalGameCoreUtils.h"
+#include "CvWonderProductionAI.h"
+#endif
 
 #include "LintFree.h"
 
@@ -104,7 +108,11 @@ bool CvGameTrade::CanCreateTradeRoute(CvCity* pOriginCity, CvCity* pDestCity, Do
 			return false;
 		}
 	}
+#if defined(MOD_TRADE_WONDER_RESOURCE_ROUTES)
+	else if (eConnectionType == TRADE_CONNECTION_PRODUCTION || eConnectionType == TRADE_CONNECTION_FOOD || (MOD_TRADE_WONDER_RESOURCE_ROUTES && eConnectionType == TRADE_CONNECTION_WONDER_RESOURCE))
+#else
 	else if (eConnectionType == TRADE_CONNECTION_PRODUCTION || eConnectionType == TRADE_CONNECTION_FOOD)
+#endif
 	{
 		// can't have production or food connections internationally
 		if (eOriginTeam != eDestTeam)
@@ -169,7 +177,43 @@ bool CvGameTrade::CanCreateTradeRoute(CvCity* pOriginCity, CvCity* pDestCity, Do
 			{
 				return false;
 			}
+#if defined(MOD_TRADE_WONDER_RESOURCE_ROUTES)
 		}
+		else if (eConnectionType == TRADE_CONNECTION_WONDER_RESOURCE)
+		{
+			bool bAllowsWonderResourceConnection = false;
+			ResourceTypes eWonderResource = ::getWonderResource();
+
+			// We need the wonder resource at pOriginCity AND not at pDestCity
+			if (eWonderResource != NO_RESOURCE) {
+				bAllowsWonderResourceConnection	= (pOriginCity->IsHasResourceLocal(eWonderResource, true) && !pDestCity->IsHasResourceLocal(eWonderResource, true));
+			}
+
+			if (bAllowsWonderResourceConnection) {
+				// No existing resource trade route from pOriginCity (ie we can't ship it out twice)
+				int iOriginX = pOriginCity->getX();
+				int iOriginY = pOriginCity->getY();
+
+				for (uint i = 0; i < m_aTradeConnections.size(); i++) {
+					if (m_aTradeConnections[i].m_eConnectionType == eConnectionType && m_aTradeConnections[i].m_iOriginX == iOriginX && m_aTradeConnections[i].m_iOriginY == iOriginY) {
+						return false;
+					}
+				}
+			}
+
+			if (!bAllowsWonderResourceConnection)
+			{
+				return false;
+			}
+#endif
+		}
+#if defined(MOD_BUGFIX_MINOR)
+	}
+	else
+	{
+		// Unknown trade connection type
+		return false;
+#endif
 	}
 
 	// teams at war can't fight
@@ -351,7 +395,12 @@ bool CvGameTrade::CreateTradeRoute(CvCity* pOriginCity, CvCity* pDestCity, Domai
 		iTurnsPerCircuit = ((m_aTradeConnections[iNewTradeRouteIndex].m_aPlotList.size() - 1) * 2) / iRouteSpeed;
 	}
 	
+#if defined(MOD_TRADE_ROUTE_SCALING)
+	int iTargetTurns = GD_INT_GET(TRADE_ROUTE_BASE_TARGET_TURNS); // how many turns do we want the cycle to consume
+	iTargetTurns = iTargetTurns * GC.getGame().getGameSpeedInfo().getTradeRouteSpeedMod() / 100;
+#else
 	int iTargetTurns = 30; // how many turns do we want the cycle to consume
+#endif
 	int iCircuitsToComplete = 1; // how many circuits do we want this trade route to run to reach the target turns
 	if (iTurnsPerCircuit != 0)
 	{
@@ -361,6 +410,9 @@ bool CvGameTrade::CreateTradeRoute(CvCity* pOriginCity, CvCity* pDestCity, Domai
 	m_aTradeConnections[iNewTradeRouteIndex].m_iCircuitsCompleted = 0;
 	m_aTradeConnections[iNewTradeRouteIndex].m_iCircuitsToComplete = iCircuitsToComplete;
 	m_aTradeConnections[iNewTradeRouteIndex].m_iTurnRouteComplete = (iTurnsPerCircuit * iCircuitsToComplete) + GC.getGame().getGameTurn();
+#if defined(MOD_API_TRADEROUTES)
+	m_aTradeConnections[iNewTradeRouteIndex].m_bTradeUnitRecalled = false;
+#endif
 
 	GET_PLAYER(eOriginPlayer).GetTrade()->UpdateTradeConnectionValues();
 	if (eDestPlayer != eOriginPlayer)
@@ -397,6 +449,11 @@ bool CvGameTrade::CreateTradeRoute(CvCity* pOriginCity, CvCity* pDestCity, Domai
 		case TRADE_CONNECTION_PRODUCTION:
 			strTRType = "production";
 			break;
+#if defined(MOD_TRADE_WONDER_RESOURCE_ROUTES)
+		case TRADE_CONNECTION_WONDER_RESOURCE:
+			strTRType = "wonder resource";
+			break;
+#endif
 		case TRADE_CONNECTION_INTERNATIONAL:
 			strTRType = "international";
 			break;
@@ -597,11 +654,19 @@ int CvGameTrade::GetDomainModifierTimes100 (DomainTypes eDomain)
 {
 	if (eDomain == DOMAIN_SEA)
 	{
+#if defined(MOD_TRADE_ROUTE_SCALING)
+		return GD_INT_GET(TRADE_ROUTE_BASE_SEA_MODIFIER);
+#else
 		return 100;
+#endif
 	}
 	else
 	{
+#if defined(MOD_TRADE_ROUTE_SCALING)
+		return GD_INT_GET(TRADE_ROUTE_BASE_LAND_MODIFIER);
+#else
 		return 0;
+#endif
 	}
 }
 
@@ -847,6 +912,9 @@ bool CvGameTrade::EmptyTradeRoute(int iIndex)
 	kTradeConnection.m_iCircuitsCompleted = 0;
 	kTradeConnection.m_iCircuitsToComplete = 0;
 	kTradeConnection.m_iTurnRouteComplete = 0;
+#if defined(MOD_API_TRADEROUTES)
+	kTradeConnection.m_bTradeUnitRecalled = false;
+#endif
 	kTradeConnection.m_aPlotList.clear();
 	kTradeConnection.m_unitID = -1;
 
@@ -888,7 +956,12 @@ void CvGameTrade::ClearAllCityTradeRoutes (CvPlot* pPlot)
 				// if the destination was wiped, the origin gets a trade unit back
 				if (bMatchesDest && GET_PLAYER(m_aTradeConnections[ui].m_eOriginOwner).isAlive())
 				{
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+					CvPlayer& kPlayer = GET_PLAYER(m_aTradeConnections[ui].m_eOriginOwner);
+					UnitTypes eUnitType = kPlayer.GetTrade()->GetTradeUnit(m_aTradeConnections[ui].m_eDomain, &kPlayer);
+#else
 					UnitTypes eUnitType = GET_PLAYER(m_aTradeConnections[ui].m_eOriginOwner).GetTrade()->GetTradeUnit(m_aTradeConnections[ui].m_eDomain);
+#endif
 					CvAssertMsg(eUnitType != NO_UNIT, "No trade unit found");
 					if (eUnitType != NO_UNIT)
 					{
@@ -929,7 +1002,12 @@ void CvGameTrade::ClearAllCivTradeRoutes (PlayerTypes ePlayer)
 				// if the destination was wiped, the origin gets a trade unit back
 				if (GET_PLAYER(m_aTradeConnections[ui].m_eOriginOwner).isAlive())
 				{
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+					CvPlayer& kPlayer = GET_PLAYER(m_aTradeConnections[ui].m_eOriginOwner);
+					UnitTypes eUnitType = kPlayer.GetTrade()->GetTradeUnit(m_aTradeConnections[ui].m_eDomain, &kPlayer);
+#else
 					UnitTypes eUnitType = GET_PLAYER(m_aTradeConnections[ui].m_eOriginOwner).GetTrade()->GetTradeUnit(m_aTradeConnections[ui].m_eDomain);
+#endif
 					CvAssertMsg(eUnitType != NO_UNIT, "No trade unit found");
 					if (eUnitType != NO_UNIT)
 					{
@@ -960,7 +1038,12 @@ void CvGameTrade::ClearAllCityStateTradeRoutes (void)
 			// if the destination was wiped, the origin gets a trade unit back
 			if (GET_PLAYER(m_aTradeConnections[ui].m_eOriginOwner).isAlive())
 			{
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+				CvPlayer& kPlayer = GET_PLAYER(m_aTradeConnections[ui].m_eOriginOwner);
+				UnitTypes eUnitType = kPlayer.GetTrade()->GetTradeUnit(m_aTradeConnections[ui].m_eDomain, &kPlayer);
+#else
 				UnitTypes eUnitType = GET_PLAYER(m_aTradeConnections[ui].m_eOriginOwner).GetTrade()->GetTradeUnit(m_aTradeConnections[ui].m_eDomain);
+#endif
 				CvAssertMsg(eUnitType != NO_UNIT, "No trade unit found");
 				if (eUnitType != NO_UNIT)
 				{
@@ -1066,7 +1149,11 @@ void CvGameTrade::DoAutoWarPlundering(TeamTypes eTeam1, TeamTypes eTeam2)
 							if (pLoopUnit->canPlunderTradeRoute(pPlot, true))
 							{
 								// cheating to get around war!
+#if defined(MOD_API_EXTENSIONS)
+								GET_PLAYER(pLoopUnit->getOwner()).GetTrade()->PlunderTradeRoute(m_aTradeConnections[uiTradeRoute].m_iID, pLoopUnit);
+#else
 								GET_PLAYER(pLoopUnit->getOwner()).GetTrade()->PlunderTradeRoute(m_aTradeConnections[uiTradeRoute].m_iID);
+#endif
 								break;
 							}
 						}
@@ -1280,6 +1367,51 @@ int CvGameTrade::GetTechDifference (PlayerTypes ePlayer, PlayerTypes ePlayer2)
 	return m_aaiTechDifference[ePlayer][ePlayer2];
 }
 
+#if defined(MOD_API_TRADEROUTES)
+bool CvGameTrade::IsRecalledUnit (int iIndex) {
+	CvAssertMsg(iIndex >= 0 && iIndex < (int)m_aTradeConnections.size(), "iIndex out of bounds");
+	if (iIndex < 0 || iIndex >= (int)m_aTradeConnections.size())
+	{
+		return false;
+	}
+
+	TradeConnection &kTradeConnection = m_aTradeConnections[iIndex];
+	return kTradeConnection.m_bTradeUnitRecalled;
+}
+
+//	--------------------------------------------------------------------------------
+/// recall a trade unit
+void CvGameTrade::RecallUnit (int iIndex, bool bImmediate) {
+	CvAssertMsg(iIndex >= 0 && iIndex < (int)m_aTradeConnections.size(), "iIndex out of bounds");
+	if (iIndex < 0 || iIndex >= (int)m_aTradeConnections.size())
+	{
+		return;
+	}
+
+	TradeConnection &kTradeConnection = m_aTradeConnections[iIndex];
+	kTradeConnection.m_iCircuitsCompleted = kTradeConnection.m_iCircuitsToComplete-1;
+	kTradeConnection.m_bTradeUnitRecalled = true;
+
+	if (bImmediate) {
+		kTradeConnection.m_bTradeUnitMovingForward = false;
+	}
+}
+
+//	--------------------------------------------------------------------------------
+/// end a trade route
+void CvGameTrade::EndTradeRoute (int iIndex) {
+	CvAssertMsg(iIndex >= 0 && iIndex < (int)m_aTradeConnections.size(), "iIndex out of bounds");
+	if (iIndex < 0 || iIndex >= (int)m_aTradeConnections.size())
+	{
+		return;
+	}
+
+	TradeConnection &kTradeConnection = m_aTradeConnections[iIndex];
+	kTradeConnection.m_iCircuitsCompleted = kTradeConnection.m_iCircuitsToComplete;
+	kTradeConnection.m_bTradeUnitRecalled = true;
+}
+#endif
+
 //	--------------------------------------------------------------------------------
 /// move a trade unit along its path for all its movement points
 bool CvGameTrade::MoveUnit (int iIndex) 
@@ -1368,7 +1500,11 @@ bool CvGameTrade::StepUnit (int iIndex)
 		{
 			if (pEnemyUnit->canPlunderTradeRoute(pPlot, false))
 			{
+#if defined(MOD_API_EXTENSIONS)
+				GET_PLAYER(pEnemyUnit->getOwner()).GetTrade()->PlunderTradeRoute(kTradeConnection.m_iID, pEnemyUnit);
+#else
 				GET_PLAYER(pEnemyUnit->getOwner()).GetTrade()->PlunderTradeRoute(kTradeConnection.m_iID);
+#endif
 				// done died!
 				return false;
 			}
@@ -1391,10 +1527,17 @@ void CvGameTrade::CreateVis(int iIndex)
 
 	if (kTradeConnection.m_unitID == -1)
 	{
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+		CvPlayer& kPlayer = GET_PLAYER(kTradeConnection.m_eOriginOwner);
+		UnitTypes eUnitType = CvPlayerTrade::GetTradeUnit(kTradeConnection.m_eDomain, &kPlayer);
+#else
 		UnitTypes eUnitType = CvPlayerTrade::GetTradeUnit(kTradeConnection.m_eDomain);
+#endif
 		if (eUnitType != NO_UNIT)
 		{
+#if !defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
 			CvPlayer& kPlayer = GET_PLAYER(kTradeConnection.m_eOriginOwner);
+#endif
 			CvUnit* pkUnit = kPlayer.initUnit(eUnitType, kTradeConnection.m_aPlotList[kTradeConnection.m_iTradeUnitLocationIndex].m_iX, kTradeConnection.m_aPlotList[kTradeConnection.m_iTradeUnitLocationIndex].m_iY, NO_UNITAI, NO_DIRECTION, false, true, TRADE_UNIT_MAP_LAYER);
 			if (pkUnit)
 			{
@@ -1530,6 +1673,7 @@ FDataStream& operator>>(FDataStream& loadFrom, CvGameTrade& writeTo)
 
 	uint uiVersion;
 	loadFrom >> uiVersion;
+	MOD_SERIALIZE_INIT_READ(loadFrom);
 
 	int iNum = 0;
 	loadFrom >> iNum;
@@ -1575,6 +1719,10 @@ FDataStream& operator>>(FDataStream& loadFrom, CvGameTrade& writeTo)
 		{
 			writeTo.m_aTradeConnections[i].m_iTurnRouteComplete = 0;
 		}
+
+#if defined(MOD_API_TRADEROUTES)
+        MOD_SERIALIZE_READ(23, loadFrom, writeTo.m_aTradeConnections[i].m_bTradeUnitRecalled, false);
+#endif
 
 		int iNum2 = 0;
 		loadFrom >> iNum2;
@@ -1639,6 +1787,7 @@ FDataStream& operator<<(FDataStream& saveTo, const CvGameTrade& readFrom)
 {
 	uint uiVersion = 3;
 	saveTo << uiVersion;
+	MOD_SERIALIZE_INIT_WRITE(saveTo);
 
 	saveTo << readFrom.m_aTradeConnections.size();
 	for (uint ui = 0; ui < readFrom.m_aTradeConnections.size(); ui++)
@@ -1659,6 +1808,9 @@ FDataStream& operator<<(FDataStream& saveTo, const CvGameTrade& readFrom)
 		saveTo << readFrom.m_aTradeConnections[ui].m_iCircuitsCompleted;
 		saveTo << readFrom.m_aTradeConnections[ui].m_iCircuitsToComplete;
 		saveTo << readFrom.m_aTradeConnections[ui].m_iTurnRouteComplete;
+#if defined(MOD_API_TRADEROUTES)
+        MOD_SERIALIZE_WRITE(saveTo, readFrom.m_aTradeConnections[ui].m_bTradeUnitRecalled);
+#endif
 
 		saveTo << readFrom.m_aTradeConnections[ui].m_aPlotList.size();
 		for (uint ui2 = 0; ui2 < readFrom.m_aTradeConnections[ui].m_aPlotList.size(); ui2++)
@@ -1763,9 +1915,17 @@ void CvPlayerTrade::MoveUnits (void)
 				pTrade->EmptyTradeRoute(ui);
 				
 				// create new unit
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+				UnitTypes eUnitType = GetTradeUnit(eDomain, m_pPlayer);
+#else
 				UnitTypes eUnitType = GetTradeUnit(eDomain);
+#endif
+#if defined(MOD_BUGFIX_MINOR)
+				m_pPlayer->initUnit(eUnitType, iOriginX, iOriginY, UNITAI_TRADE_UNIT);
+#else
 				CvUnit* pRebornUnit = m_pPlayer->initUnit(eUnitType, iOriginX, iOriginY, UNITAI_TRADE_UNIT);
 				CvAssertMsg(pRebornUnit, "pRebornUnit is null. This is bad!!");
+#endif
 			}
 		}
 	}
@@ -1791,7 +1951,11 @@ int CvPlayerTrade::GetTradeConnectionBaseValueTimes100(const TradeConnection& kT
 				int iAdjustedTechDifference = 0;
 				if (iTechDifference > 0)
 				{
+#if defined(MOD_TRADE_ROUTE_SCALING)
+					int iCeilTechDifference = iTechDifference * 100 / GD_INT_GET(TRADE_ROUTE_SCIENCE_DIVISOR_TIMES100);
+#else
 					int iCeilTechDifference = (int)ceil(iTechDifference / 2.0f);
+#endif
 					iAdjustedTechDifference = max(iCeilTechDifference, 1);
 				}
 
@@ -1811,7 +1975,11 @@ int CvPlayerTrade::GetTradeConnectionBaseValueTimes100(const TradeConnection& kT
 			int iAdjustedTechDifference = 0;
 			if (iTechDifference > 0)
 			{
+#if defined(MOD_TRADE_ROUTE_SCALING)
+				int iCeilTechDifference = iTechDifference * 100 / GD_INT_GET(TRADE_ROUTE_SCIENCE_DIVISOR_TIMES100);
+#else
 				int iCeilTechDifference = (int)ceil(iTechDifference / 2.0f);
+#endif
 				iAdjustedTechDifference = max(iCeilTechDifference, 1);
 			}
 
@@ -1819,7 +1987,7 @@ int CvPlayerTrade::GetTradeConnectionBaseValueTimes100(const TradeConnection& kT
 		}
 		else
 		{
-			return 100;
+			return 0;
 		}
 	}
 
@@ -1917,7 +2085,11 @@ int CvPlayerTrade::GetTradeConnectionResourceValueTimes100(const TradeConnection
 						{
 							if (pOriginCity->IsHasResourceLocal(eResource, false) != pDestCity->IsHasResourceLocal(eResource, false))
 							{
+#if defined(MOD_TRADE_ROUTE_SCALING)
+								iValue += GD_INT_GET(TRADE_ROUTE_DIFFERENT_RESOURCE_VALUE);
+#else
 								iValue += 50;
+#endif
 							}
 						}
 					}
@@ -2162,6 +2334,12 @@ int CvPlayerTrade::GetTradeConnectionOtherTraitValueTimes100(const TradeConnecti
 		{
 			iValue += GET_PLAYER(kTradeConnection.m_eDestOwner).GetPlayerTraits()->GetYieldChangeIncomingTradeRoute(eYield) * 100;
 		}
+#if defined(MOD_API_UNIFIED_YIELDS)
+	}
+	else
+	{
+		iValue += GET_PLAYER(kTradeConnection.m_eOriginOwner).GetPlayerTraits()->GetYieldChangeIncomingTradeRoute(eYield) * 100;
+#endif
 	}
 
 	return iValue;
@@ -2200,7 +2378,11 @@ int CvPlayerTrade::GetTradeConnectionRiverValueModifierTimes100(const TradeConne
 				CvPlot* pOriginCityPlot = pOriginCity->plot();
 				if (pOriginCityPlot->isRiver())
 				{
+#if defined(MOD_TRADE_ROUTE_SCALING)
+					iModifier = GD_INT_GET(TRADE_ROUTE_RIVER_CITY_MODIFIER);
+#else
 					iModifier = 25;
+#endif
 				}
 			}
 		}
@@ -2213,7 +2395,11 @@ int CvPlayerTrade::GetTradeConnectionRiverValueModifierTimes100(const TradeConne
 				CvPlot* pDestCityPlot = pDestCity->plot();
 				if (pDestCityPlot->isRiver())
 				{
+#if defined(MOD_TRADE_ROUTE_SCALING)
+					iModifier = GD_INT_GET(TRADE_ROUTE_RIVER_CITY_MODIFIER);
+#else
 					iModifier = 25;
+#endif
 				}
 			}
 		}
@@ -2268,15 +2454,37 @@ int CvPlayerTrade::GetTradeConnectionValueTimes100 (const TradeConnection& kTrad
 					iValue = max(100, iValue);
 				}
 				break;
+#if defined(MOD_API_UNIFIED_YIELDS)
+			case YIELD_CULTURE:
+			case YIELD_FAITH:
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS_TOURISM)
+			case YIELD_TOURISM:
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS_GOLDEN_AGE)
+			case YIELD_GOLDEN_AGE_POINTS:
+#endif
 			case YIELD_SCIENCE:
-				int iBaseValue = GetTradeConnectionBaseValueTimes100(kTradeConnection, eYield, bAsOriginPlayer);
+#if defined(MOD_API_UNIFIED_YIELDS)
+				{
+#endif
+					int iBaseValue = GetTradeConnectionBaseValueTimes100(kTradeConnection, eYield, bAsOriginPlayer);
+#if defined(MOD_API_UNIFIED_YIELDS)
+					int iTraitBonus = GetTradeConnectionOtherTraitValueTimes100(kTradeConnection, eYield, bAsOriginPlayer);
+#endif
 
-				iValue = iBaseValue;
+					iValue = iBaseValue;
+#if defined(MOD_API_UNIFIED_YIELDS)
+					iValue += iTraitBonus;
+#endif
 
-				int iModifier = 100;
+					int iModifier = 100;
 				
-				iValue *= iModifier;
-				iValue /= 100;
+					iValue *= iModifier;
+					iValue /= 100;
+#if defined(MOD_API_UNIFIED_YIELDS)
+				}
+#endif
 				break;
 			}
 		}
@@ -2312,13 +2520,29 @@ int CvPlayerTrade::GetTradeConnectionValueTimes100 (const TradeConnection& kTrad
 						iValue /= 100;
 					}
 					break;
+#if defined(MOD_API_UNIFIED_YIELDS)
+				case YIELD_CULTURE:
+				case YIELD_FAITH:
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS_TOURISM)
+				case YIELD_TOURISM:
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS_GOLDEN_AGE)
+				case YIELD_GOLDEN_AGE_POINTS:
+#endif
 				case YIELD_SCIENCE:
 					{
 						int iBaseValue = GetTradeConnectionBaseValueTimes100(kTradeConnection, eYield, bAsOriginPlayer);
+#if defined(MOD_API_UNIFIED_YIELDS)
+						int iTraitBonus = GetTradeConnectionOtherTraitValueTimes100(kTradeConnection, eYield, bAsOriginPlayer);
+#endif
 
 						int iModifier = 100;
 
 						iValue = iBaseValue;
+#if defined(MOD_API_UNIFIED_YIELDS)
+						iValue += iTraitBonus;
+#endif
 
 						iValue *= iModifier;
 						iValue /= 100;						
@@ -2334,7 +2558,14 @@ int CvPlayerTrade::GetTradeConnectionValueTimes100 (const TradeConnection& kTrad
 			case TRADE_CONNECTION_FOOD:
 				if (eYield == YIELD_FOOD)
 				{
+#if defined(MOD_TRADE_ROUTE_SCALING)
+					iValue = GD_INT_GET(TRADE_ROUTE_BASE_FOOD_VALUE);
+#else
 					iValue = 300;
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS)
+					iValue += GetTradeConnectionOtherTraitValueTimes100(kTradeConnection, YIELD_FOOD, bAsOriginPlayer);
+#endif
 					iValue += GC.getEraInfo(GET_PLAYER(kTradeConnection.m_eDestOwner).GetCurrentEra())->getTradeRouteFoodBonusTimes100();
 					iValue *= GC.getEraInfo(GC.getGame().getStartEra())->getGrowthPercent();
 					iValue /= 100;
@@ -2350,7 +2581,14 @@ int CvPlayerTrade::GetTradeConnectionValueTimes100 (const TradeConnection& kTrad
 			case TRADE_CONNECTION_PRODUCTION:
 				if (eYield == YIELD_PRODUCTION)
 				{
+#if defined(MOD_TRADE_ROUTE_SCALING)
+					iValue = GD_INT_GET(TRADE_ROUTE_BASE_PRODUCTION_VALUE);
+#else
 					iValue = 300;
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS)
+					iValue += GetTradeConnectionOtherTraitValueTimes100(kTradeConnection, YIELD_PRODUCTION, bAsOriginPlayer);
+#endif
 					iValue += GC.getEraInfo(GET_PLAYER(kTradeConnection.m_eDestOwner).GetCurrentEra())->getTradeRouteProductionBonusTimes100();
 					iValue *= (GC.getEraInfo(GC.getGame().getStartEra())->getConstructPercent() + GC.getEraInfo(GC.getGame().getStartEra())->getTrainPercent()) / 2;
 					iValue /= 100;
@@ -2624,6 +2862,7 @@ bool CvPlayerTrade::CreateTradeRoute(CvCity* pOriginCity, CvCity* pDestCity, Dom
 		}
 	}
 
+#if !defined(NO_ACHIEVEMENTS)
 	if (m_pPlayer->isHuman() && !GC.getGame().isGameMultiPlayer())
 	{
 		bool bConnectedToArabs = false;
@@ -2678,6 +2917,7 @@ bool CvPlayerTrade::CreateTradeRoute(CvCity* pOriginCity, CvCity* pDestCity, Dom
 			gDLL->UnlockAchievement(ACHIEVEMENT_XP2_29);
 		}
 	}
+#endif
 
 	return true;
 }
@@ -2983,7 +3223,11 @@ bool CvPlayerTrade::ContainsEnemyTradePlot(const CvPlot* pPlot)
 }
 
 //	--------------------------------------------------------------------------------
+#if defined(MOD_API_EXTENSIONS)
+bool CvPlayerTrade::PlunderTradeRoute(int iTradeConnectionID, CvUnit* pUnit)
+#else
 bool CvPlayerTrade::PlunderTradeRoute(int iTradeConnectionID)
+#endif
 {
 	CvGameTrade* pTrade = GC.getGame().GetGameTrade();
 	int iTradeConnectionIndex = pTrade->GetIndexFromID(iTradeConnectionID);
@@ -2995,6 +3239,9 @@ bool CvPlayerTrade::PlunderTradeRoute(int iTradeConnectionID)
 	}
 
 	TradeConnection* pTradeConnection = &(pTrade->m_aTradeConnections[iTradeConnectionIndex]);
+#if defined(MOD_EVENTS_TRADE_ROUTE_PLUNDERED)
+	TradeConnectionType eConnectionType = pTradeConnection->m_eConnectionType;
+#endif
 	DomainTypes eDomain = pTradeConnection->m_eDomain;
 	PlayerTypes eOwningPlayer = pTradeConnection->m_eOriginOwner;
 	PlayerTypes eDestPlayer = pTradeConnection->m_eDestOwner;
@@ -3029,7 +3276,11 @@ bool CvPlayerTrade::PlunderTradeRoute(int iTradeConnectionID)
 		return false;
 	}
 
+#if defined(MOD_TRADE_ROUTE_SCALING)
+	int iPlunderGoldValue = GD_INT_GET(TRADE_ROUTE_BASE_PLUNDER_GOLD);
+#else
 	int iPlunderGoldValue = 100;
+#endif
 	iPlunderGoldValue *= 100 + iDomainModifier;
 	iPlunderGoldValue /= 100;
 	m_pPlayer->GetTreasury()->ChangeGold(iPlunderGoldValue);
@@ -3042,6 +3293,10 @@ bool CvPlayerTrade::PlunderTradeRoute(int iTradeConnectionID)
 		float fDelay = 0.0f;
 		DLLUI->AddPopupText(pPlunderPlot->getX(), pPlunderPlot->getY(), text, fDelay);
 		CvString strBuffer;
+
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+		strBuffer = GetLocalizedText("TXT_KEY_MISC_PLUNDERED_GOLD_FROM_IMP", iPlunderGoldValue, GC.getUnitInfo(GetTradeUnit(eDomain, m_pPlayer))->GetDescriptionKey());
+#else
 		if (eDomain == DOMAIN_LAND)
 		{
 			strBuffer = GetLocalizedText("TXT_KEY_MISC_PLUNDERED_GOLD_FROM_IMP", iPlunderGoldValue, "TXT_KEY_UNIT_CARAVAN");
@@ -3050,7 +3305,7 @@ bool CvPlayerTrade::PlunderTradeRoute(int iTradeConnectionID)
 		{
 			strBuffer = GetLocalizedText("TXT_KEY_MISC_PLUNDERED_GOLD_FROM_IMP", iPlunderGoldValue, "TXT_KEY_UNIT_CARGO_SHIP");
 		}
-
+#endif
 		
 		DLLUI->AddMessage(0, m_pPlayer->GetID(), true, GC.getEVENT_MESSAGE_TIME(), strBuffer);
 	}
@@ -3180,10 +3435,18 @@ bool CvPlayerTrade::PlunderTradeRoute(int iTradeConnectionID)
 		}
 	}
 
+#if !defined(NO_ACHIEVEMENTS)
 	if (eDomain == DOMAIN_LAND && m_pPlayer->isHuman() && !GC.getGame().isGameMultiPlayer())
 	{
 		gDLL->UnlockAchievement(ACHIEVEMENT_XP2_28);
 	}
+#endif
+
+#if defined(MOD_EVENTS_TRADE_ROUTE_PLUNDERED)
+	if (MOD_EVENTS_TRADE_ROUTE_PLUNDERED) {
+		GAMEEVENTINVOKE_HOOK(GAMEEVENT_PlayerPlunderedTradeRoute, pUnit->getOwner(), pUnit->GetID(), iPlunderGoldValue, pOriginCity->getOwner(), pOriginCity->GetID(), pDestCity->getOwner(), pDestCity->GetID(), eConnectionType, eDomain);
+	}
+#endif
 
 	return true;
 }
@@ -3193,14 +3456,26 @@ int CvPlayerTrade::GetTradeRouteRange (DomainTypes eDomain, CvCity* pOriginCity)
 {
 	int iRange = 0;
 
+#if defined(MOD_TRADE_ROUTE_SCALING)
+	int iRouteModifier = GC.getMap().getWorldInfo().getTradeRouteDistanceMod();
+#endif
+
 	int iBaseRange = 0;
 	switch (eDomain)
 	{
 	case DOMAIN_SEA:
+#if defined(MOD_TRADE_ROUTE_SCALING)
+		iBaseRange = GD_INT_GET(TRADE_ROUTE_BASE_SEA_DISTANCE);
+#else
 		iBaseRange = 20;
+#endif
 		break;
 	case DOMAIN_LAND:
+#if defined(MOD_TRADE_ROUTE_SCALING)
+		iBaseRange = GD_INT_GET(TRADE_ROUTE_BASE_LAND_DISTANCE);
+#else
 		iBaseRange = 10;
+#endif
 		break;
 	default:
 		CvAssertMsg(false, "Undefined domain for trade route range");
@@ -3212,8 +3487,12 @@ int CvPlayerTrade::GetTradeRouteRange (DomainTypes eDomain, CvCity* pOriginCity)
 	switch (eDomain)
 	{
 	case DOMAIN_SEA:
+#if defined(MOD_TRAITS_TRADE_ROUTE_BONUSES)
+		iTraitRange = m_pPlayer->GetPlayerTraits()->GetSeaTradeRouteRangeBonus();
+#else
 		// not implemented
 		iTraitRange = 0;
+#endif
 		break;
 	case DOMAIN_LAND:
 		iTraitRange = m_pPlayer->GetPlayerTraits()->GetLandTradeRouteRangeBonus();
@@ -3270,6 +3549,9 @@ int CvPlayerTrade::GetTradeRouteRange (DomainTypes eDomain, CvCity* pOriginCity)
 	iRange = iBaseRange;
 	iRange += iTraitRange;
 	iRange += iExtendedRange;
+#if defined(MOD_TRADE_ROUTE_SCALING)
+	iRange = (iRange * iRouteModifier) / 100;
+#endif
 	iRange = (iRange * (100 + iRangeModifier)) / 100;
 	return iRange;
 }
@@ -3277,6 +3559,18 @@ int CvPlayerTrade::GetTradeRouteRange (DomainTypes eDomain, CvCity* pOriginCity)
 //	--------------------------------------------------------------------------------
 int CvPlayerTrade::GetTradeRouteSpeed (DomainTypes eDomain)
 {
+#if defined(MOD_TRADE_ROUTE_SCALING)
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+	UnitTypes eUnitType = GetTradeUnit(eDomain, m_pPlayer);
+#else
+	UnitTypes eUnitType = GetTradeUnit(eDomain);
+#endif
+	CvUnitEntry* pkUnitInfo = GC.getUnitInfo(eUnitType);
+
+	if (pkUnitInfo) {
+		return pkUnitInfo->GetMoves();
+	}
+#else
 	switch (eDomain)
 	{
 	case DOMAIN_SEA:
@@ -3286,6 +3580,7 @@ int CvPlayerTrade::GetTradeRouteSpeed (DomainTypes eDomain)
 		return 2;
 		break;
 	}
+#endif
 
 	CvAssertMsg(false, "Undefined domain for trade route speed");
 	return -1;
@@ -3446,7 +3741,12 @@ int CvPlayerTrade::GetNumDifferentTradingPartners (void)
 //	--------------------------------------------------------------------------------
 void CvPlayerTrade::UpdateTradeConnectionWasPlundered()
 {
+#if defined(MOD_TRADE_ROUTE_SCALING)
+	int iTurnsUntilForget = GD_INT_GET(TRADE_ROUTE_PLUNDER_TURNS_COUNTER);
+	iTurnsUntilForget = iTurnsUntilForget * GC.getGame().getGameSpeedInfo().getTradeRouteSpeedMod() / 100;
+#else
 	int iTurnsUntilForget = 30;
+#endif
 	for (uint ui = 0; ui < m_aTradeConnectionWasPlundered.size(); ui++)
 	{
 		if ((m_aTradeConnectionWasPlundered[ui].m_iTurnPlundered + iTurnsUntilForget) <= GC.getGame().getGameTurn())
@@ -3503,16 +3803,28 @@ bool CvPlayerTrade::CheckTradeConnectionWasPlundered(const TradeConnection& kTra
 }
 
 //	--------------------------------------------------------------------------------
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+UnitTypes CvPlayerTrade::GetTradeUnit (DomainTypes eDomain, CvPlayer* pPlayer)
+#else
 UnitTypes CvPlayerTrade::GetTradeUnit (DomainTypes eDomain)
+#endif
 {
 	UnitTypes eUnitType = NO_UNIT;
 	if (eDomain == DOMAIN_LAND)
 	{
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+		eUnitType = pPlayer->GetSpecificUnitType("UNITCLASS_CARAVAN");
+#else
 		eUnitType = (UnitTypes)GC.getInfoTypeForString("UNIT_CARAVAN");
+#endif
 	}
 	else if (eDomain == DOMAIN_SEA)
 	{
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+		eUnitType = pPlayer->GetSpecificUnitType("UNITCLASS_CARGO_SHIP");
+#else
 		eUnitType = (UnitTypes)GC.getInfoTypeForString("UNIT_CARGO_SHIP");
+#endif
 	}
 
 	return eUnitType;
@@ -3683,13 +3995,21 @@ std::vector<CvString> CvPlayerTrade::GetPlotMouseoverToolTips (CvPlot* pPlot)
 							strLine = Localization::Lookup("TXT_KEY_MULTIPLAYER_UNIT_TT");
 							strLine << GET_PLAYER(pConnection->m_eOriginOwner).getNickName();
 							strLine << GET_PLAYER(pConnection->m_eOriginOwner).getCivilizationAdjectiveKey();
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+							strLine << GC.getUnitInfo(GetTradeUnit(pConnection->m_eDomain, &GET_PLAYER(pConnection->m_eOriginOwner)))->GetDescription();
+#else
 							strLine << GC.getUnitInfo(GetTradeUnit(pConnection->m_eDomain))->GetDescription();
+#endif
 						}
 						else
 						{
 							strLine = Localization::Lookup("TXT_KEY_PLOTROLL_UNIT_DESCRIPTION_CIV");
 							strLine << GET_PLAYER(pConnection->m_eOriginOwner).getCivilizationAdjectiveKey();
+#if defined(MOD_BUGFIX_UNITCLASS_NOT_UNIT)
+							strLine << GC.getUnitInfo(GetTradeUnit(pConnection->m_eDomain, &GET_PLAYER(pConnection->m_eOriginOwner)))->GetDescription();
+#else
 							strLine << GC.getUnitInfo(GetTradeUnit(pConnection->m_eDomain))->GetDescription();
+#endif
 						}
 
 						
@@ -3726,6 +4046,7 @@ FDataStream& operator>>(FDataStream& loadFrom, CvPlayerTrade& writeTo)
 {
 	uint uiVersion;
 	loadFrom >> uiVersion;
+	MOD_SERIALIZE_INIT_READ(loadFrom);
 
 	if (uiVersion >= 1) 
 	{
@@ -3810,6 +4131,7 @@ FDataStream& operator<<(FDataStream& saveTo, const CvPlayerTrade& readFrom)
 {
 	uint uiVersion = 2;
 	saveTo << uiVersion;
+	MOD_SERIALIZE_INIT_WRITE(saveTo);
 
 	saveTo << readFrom.m_aRecentlyExpiredConnections.size();
 	for (uint ui = 0; ui < readFrom.m_aRecentlyExpiredConnections.size(); ui++)
@@ -4246,6 +4568,77 @@ int CvTradeAI::ScoreProductionTR (const TradeConnection& kTradeConnection, std::
 	return iDistanceScore - iDangerSum;
 }
 
+#if defined(MOD_TRADE_WONDER_RESOURCE_ROUTES)
+/// Score Wonder TR
+int CvTradeAI::ScoreWonderTR (const TradeConnection& kTradeConnection, std::vector<CvCity*> aTargetCityList)
+{
+	// If it wasn't for this test, this method would be the same as ScoreProductionTR()
+	// only consider wonder trades
+	if (kTradeConnection.m_eConnectionType != TRADE_CONNECTION_WONDER_RESOURCE)
+	{
+		return 0;
+	}
+
+	// if this was recently plundered, 0 the score
+	if (m_pPlayer->GetTrade()->CheckTradeConnectionWasPlundered(kTradeConnection))
+	{
+		return 0;
+	}
+
+	// if we're not going to a target wonder city, ignore
+	bool bValidTarget = false;
+	for (uint ui = 0; ui < aTargetCityList.size(); ui++)
+	{
+		if (kTradeConnection.m_iDestX == aTargetCityList[ui]->getX() && kTradeConnection.m_iDestY == aTargetCityList[ui]->getY())
+		{
+			bValidTarget = true;
+			break;
+		}
+	}
+
+	if (!bValidTarget)
+	{
+		return 0;
+	}
+
+	int iMaxDistance = 60;
+	int iDistance = kTradeConnection.m_aPlotList.size();
+	int iDistanceScore = iMaxDistance - iDistance;
+	if (kTradeConnection.m_eDomain == DOMAIN_SEA)
+	{
+		iDistanceScore = iDistanceScore * 2;
+	}
+
+	//CvPlayerTrade* pPlayerTrade = m_pPlayer->GetTrade();
+	int iDangerSum = 1; // can't be zero because we divide by zero!
+	for (uint uiPlotList = 0; uiPlotList < kTradeConnection.m_aPlotList.size(); uiPlotList++)
+	{
+		CvPlot* pPlot = GC.getMap().plot(kTradeConnection.m_aPlotList[uiPlotList].m_iX, kTradeConnection.m_aPlotList[uiPlotList].m_iY);
+		CvAssertMsg(pPlot, "pPlot is null when trying to evaluate the list");
+		if (pPlot == NULL)
+		{
+			break;
+		}
+		int iDangerValue = m_pPlayer->GetPlotDanger(*pPlot);
+		if (iDangerValue == 0)
+		{
+			if (!pPlot->isVisible(m_pPlayer->getTeam()))
+			{
+				iDangerValue += 1;
+			}
+
+			if (pPlot->getTeam() != NO_TEAM && GET_TEAM(m_pPlayer->getTeam()).isAtWar(pPlot->getTeam()))
+			{
+				iDangerValue += 1000;
+			}
+		}
+		iDangerSum += iDangerValue;
+	}
+
+	return iDistanceScore - iDangerSum;
+}
+#endif
+
 // sort player numbers
 struct TRSortElement
 {
@@ -4277,6 +4670,9 @@ void CvTradeAI::PrioritizeTradeRoutes(TradeConnectionList& aTradeConnectionList)
 	std::vector<TRSortElement> aProductionSortedTR;
 	std::vector<TRSortElement> aFoodSortedTR;
 	std::vector<TRSortElement> aGoldSortedTR;
+#if defined(MOD_TRADE_WONDER_RESOURCE_ROUTES)
+	std::vector<TRSortElement> aWonderSortedTR;
+#endif
 
 	// FOOD FOOD FOOD FOOD
 	if (m_pPlayer->GetHappiness() >= 0)
@@ -4358,6 +4754,76 @@ void CvTradeAI::PrioritizeTradeRoutes(TradeConnectionList& aTradeConnectionList)
 		std::stable_sort(aProductionSortedTR.begin(), aProductionSortedTR.end(), SortTR());
 	}
 
+#if defined(MOD_TRADE_WONDER_RESOURCE_ROUTES)
+	if (MOD_TRADE_WONDER_RESOURCE_ROUTES) {
+		// WONDER WONDER WONDER WONDER
+		ResourceTypes eWonderResource = ::getWonderResource();
+
+		if (eWonderResource != NO_RESOURCE) {
+			std::vector<CvCity*> apWonderTargetCities;
+			CvCity* pCity = NULL;
+			int iCityLoop;
+			for (pCity = m_pPlayer->firstCity(&iCityLoop); pCity != NULL; pCity = m_pPlayer->nextCity(&iCityLoop)) {
+				// Only interested in cities that don't have the wonder resource locally and are actually building a wonder!
+				if (!pCity->IsHasResourceLocal(eWonderResource, true))
+				{
+					BuildingTypes eBuilding = pCity->getProductionBuilding();
+					if (eBuilding != -1)
+					{
+						CvBuildingEntry *pkBuilding = GC.GetGameBuildings()->GetEntry(eBuilding);
+						if (pkBuilding)
+						{
+							if (GET_PLAYER(pCity->getOwner()).GetWonderProductionAI()->IsWonder(*pkBuilding))
+							{
+								bool bAddCity = true;
+								int iDestX = pCity->getX();
+								int iDestY = pCity->getY();
+
+								// Only add if no existing wonder resource trade route to here
+								CvGameTrade* pTrade = GC.getGame().GetGameTrade();
+								for (uint ui = 0; ui < pTrade->m_aTradeConnections.size(); ui++)
+								{
+									if (pTrade->IsTradeRouteIndexEmpty(ui))
+									{
+										continue;
+									}
+
+									TradeConnection* pTradeConnection = &(pTrade->m_aTradeConnections[ui]);
+									if (pTradeConnection->m_eConnectionType == TRADE_CONNECTION_WONDER_RESOURCE && pTradeConnection->m_iDestX == iDestX && pTradeConnection->m_iDestY == iDestY)
+									{
+										bAddCity = false;
+										break;
+									}
+								}
+							
+								if (bAddCity) {
+									apWonderTargetCities.push_back(pCity);
+									// CUSTOMLOG("%s is a potential destination for a Wonder Resource trade route", pCity->getName().c_str());
+								}
+							}
+						}
+					}
+				}
+			}
+			if (apWonderTargetCities.size() > 0)
+			{
+				aWonderSortedTR.clear();
+				for (uint ui = 0; ui < aTradeConnectionList.size(); ui++)
+				{
+					TRSortElement kElement;
+					kElement.m_kTradeConnection = aTradeConnectionList[ui];
+					kElement.m_iScore = ScoreWonderTR(aTradeConnectionList[ui], apWonderTargetCities);
+					if (kElement.m_iScore > 0)
+					{
+						aWonderSortedTR.push_back(kElement);
+					}
+				}
+				std::stable_sort(aWonderSortedTR.begin(), aWonderSortedTR.end(), SortTR());
+			}
+		}
+	}
+#endif
+
 	// GOLD GOLD GOLD GOLD
 	aGoldSortedTR.clear();
 	for (uint ui = 0; ui < aTradeConnectionList.size(); ui++)
@@ -4388,6 +4854,16 @@ void CvTradeAI::PrioritizeTradeRoutes(TradeConnectionList& aTradeConnectionList)
 		aTradeConnectionList.push_back(aFoodSortedTR[0].m_kTradeConnection);
 	}
 	
+#if defined(MOD_TRADE_WONDER_RESOURCE_ROUTES)
+	if (MOD_TRADE_WONDER_RESOURCE_ROUTES) {
+		// add first wonder resource tr
+		if (aWonderSortedTR.size() > 0)
+		{
+			aTradeConnectionList.push_back(aWonderSortedTR[0].m_kTradeConnection);
+		}
+	}
+#endif
+
 	// add first production tr
 	if (aProductionSortedTR.size() > 0)
 	{
@@ -4472,6 +4948,7 @@ FDataStream& operator>>(FDataStream& loadFrom, CvTradeAI& writeTo)
 {
 	uint uiVersion;
 	loadFrom >> uiVersion;
+	MOD_SERIALIZE_INIT_READ(loadFrom);
 
 	loadFrom >> writeTo.m_iRemovableValue;
 
@@ -4483,6 +4960,7 @@ FDataStream& operator<<(FDataStream& saveTo, const CvTradeAI& readFrom)
 {
 	uint uiVersion = 0;
 	saveTo << uiVersion;
+	MOD_SERIALIZE_INIT_WRITE(saveTo);
 
 	saveTo << readFrom.m_iRemovableValue;
 

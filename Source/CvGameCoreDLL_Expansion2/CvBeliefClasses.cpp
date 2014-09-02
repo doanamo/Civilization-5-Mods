@@ -83,6 +83,16 @@ CvBeliefEntry::CvBeliefEntry() :
 	m_ppaiFeatureYieldChange(NULL),
 	m_ppaiResourceYieldChange(NULL),
 	m_ppaiTerrainYieldChange(NULL),
+#if defined(MOD_RELIGION_PLOT_YIELDS)
+	m_ppaiSpecialistYieldChange(NULL),
+	m_paiCapitalYieldChange(NULL),
+	m_paiCoastalCityYieldChange(NULL),
+	m_paiGreatWorkYieldChange(NULL),
+	m_ppaiPlotYieldChange(NULL),
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS)
+	m_piYieldFromKills(NULL),
+#endif
 	m_piResourceHappiness(NULL),
 	m_piYieldChangeAnySpecialist(NULL),
 	m_piYieldChangeTradeRoute(NULL),
@@ -103,6 +113,14 @@ CvBeliefEntry::~CvBeliefEntry()
 	CvDatabaseUtility::SafeDelete2DArray(m_ppaiFeatureYieldChange);
 	CvDatabaseUtility::SafeDelete2DArray(m_ppaiResourceYieldChange);
 	CvDatabaseUtility::SafeDelete2DArray(m_ppaiTerrainYieldChange);
+#if defined(MOD_API_UNIFIED_YIELDS)
+	CvDatabaseUtility::SafeDelete2DArray(m_ppaiSpecialistYieldChange);
+#endif
+#if defined(MOD_RELIGION_PLOT_YIELDS)
+	if (MOD_RELIGION_PLOT_YIELDS) {
+		CvDatabaseUtility::SafeDelete2DArray(m_ppaiPlotYieldChange);
+	}
+#endif
 }
 
 /// Accessor:: Minimum population in this city for belief to be active (0 = no such requirement)
@@ -509,6 +527,56 @@ int CvBeliefEntry::GetTerrainYieldChange(int i, int j) const
 	return m_ppaiTerrainYieldChange ? m_ppaiTerrainYieldChange[i][j] : -1;
 }
 
+#if defined(MOD_API_UNIFIED_YIELDS)
+int CvBeliefEntry::GetSpecialistYieldChange(int i, int j) const
+{
+	CvAssertMsg(i < GC.getNumSpecialistInfos(), "Index out of bounds");
+	CvAssertMsg(i > -1, "Index out of bounds");
+	CvAssertMsg(j < NUM_YIELD_TYPES, "Index out of bounds");
+	CvAssertMsg(j > -1, "Index out of bounds");
+	return m_ppaiSpecialistYieldChange ? m_ppaiSpecialistYieldChange[i][j] : -1;
+}
+
+int CvBeliefEntry::GetCapitalYieldChange(int i) const
+{
+	return m_paiCapitalYieldChange ? m_paiCapitalYieldChange[i] : -1;
+}
+
+int CvBeliefEntry::GetCoastalCityYieldChange(int i) const
+{
+	return m_paiCoastalCityYieldChange ? m_paiCoastalCityYieldChange[i] : -1;
+}
+
+int CvBeliefEntry::GetGreatWorkYieldChange(int i) const
+{
+	return m_paiGreatWorkYieldChange ? m_paiGreatWorkYieldChange[i] : -1;
+}
+
+/// Do we get one of our yields from defeating an enemy?
+int CvBeliefEntry::GetYieldFromKills(YieldTypes eYield) const
+{
+	CvAssertMsg((int)eYield < NUM_YIELD_TYPES, "Yield type out of bounds");
+	CvAssertMsg((int)eYield > -1, "Index out of bounds");
+	return m_piYieldFromKills[(int)eYield];
+}
+#endif
+
+#if defined(MOD_RELIGION_PLOT_YIELDS)
+/// Change to yield by plot
+int CvBeliefEntry::GetPlotYieldChange(int i, int j) const
+{
+	if (MOD_API_PLOT_YIELDS) {
+		CvAssertMsg(i < GC.getNumPlotInfos(), "Index out of bounds");
+		CvAssertMsg(i > -1, "Index out of bounds");
+		CvAssertMsg(j < NUM_YIELD_TYPES, "Index out of bounds");
+		CvAssertMsg(j > -1, "Index out of bounds");
+		return m_ppaiPlotYieldChange ? m_ppaiPlotYieldChange[i][j] : -1;
+	} else {
+		return 0;
+	}
+}
+#endif
+
 /// Happiness from a resource
 int CvBeliefEntry::GetResourceHappiness(int i) const
 {
@@ -780,6 +848,62 @@ bool CvBeliefEntry::CacheResults(Database::Results& kResults, CvDatabaseUtility&
 			m_ppaiTerrainYieldChange[TerrainID][YieldID] = yield;
 		}
 	}
+	
+#if defined(MOD_API_UNIFIED_YIELDS)
+	//SpecialistYieldChanges
+	if (MOD_API_UNIFIED_YIELDS) {
+		kUtility.Initialize2DArray(m_ppaiSpecialistYieldChange, "Specialists", "Yields");
+
+		std::string strKey("Belief_SpecialistYieldChanges");
+		Database::Results* pResults = kUtility.GetResults(strKey);
+		if(pResults == NULL)
+		{
+			pResults = kUtility.PrepareResults(strKey, "select Specialists.ID as SpecialistID, Yields.ID as YieldID, Yield from Belief_SpecialistYieldChanges inner join Specialists on Specialists.Type = SpecialistType inner join Yields on Yields.Type = YieldType where BeliefType = ?");
+		}
+
+		pResults->Bind(1, szBeliefType);
+
+		while(pResults->Step())
+		{
+			const int SpecialistID = pResults->GetInt(0);
+			const int YieldID = pResults->GetInt(1);
+			const int yield = pResults->GetInt(2);
+
+			m_ppaiSpecialistYieldChange[SpecialistID][YieldID] = yield;
+		}
+	}
+	
+	kUtility.SetYields(m_paiCapitalYieldChange, "Belief_CapitalYieldChanges", "BeliefType", szBeliefType);
+	kUtility.SetYields(m_paiCoastalCityYieldChange, "Belief_CoastalCityYieldChanges", "BeliefType", szBeliefType);
+	kUtility.SetYields(m_paiGreatWorkYieldChange, "Belief_GreatWorkYieldChanges", "BeliefType", szBeliefType);
+	kUtility.SetYields(m_piYieldFromKills, "Belief_YieldFromKills", "BeliefType", szBeliefType);
+#endif
+
+#if defined(MOD_RELIGION_PLOT_YIELDS)
+	if (MOD_RELIGION_PLOT_YIELDS)
+	//PlotYieldChanges
+	{
+		kUtility.Initialize2DArray(m_ppaiPlotYieldChange, "Plots", "Yields");
+
+		std::string strKey("Belief_PlotYieldChanges");
+		Database::Results* pResults = kUtility.GetResults(strKey);
+		if(pResults == NULL)
+		{
+			pResults = kUtility.PrepareResults(strKey, "select Plots.ID as PlotID, Yields.ID as YieldID, Yield from Belief_PlotYieldChanges inner join Plots on Plots.Type = PlotType inner join Yields on Yields.Type = YieldType where BeliefType = ?");
+		}
+
+		pResults->Bind(1, szBeliefType);
+
+		while(pResults->Step())
+		{
+			const int PlotID = pResults->GetInt(0);
+			const int YieldID = pResults->GetInt(1);
+			const int yield = pResults->GetInt(2);
+
+			m_ppaiPlotYieldChange[PlotID][YieldID] = yield;
+		}
+	}
+#endif
 
 	return true;
 }
@@ -1451,6 +1575,119 @@ int CvReligionBeliefs::GetTerrainYieldChange(TerrainTypes eTerrain, YieldTypes e
 	return rtnValue;
 }
 
+#if defined(MOD_API_UNIFIED_YIELDS)
+int CvReligionBeliefs::GetSpecialistYieldChange(SpecialistTypes eSpecialist, YieldTypes eYieldType) const
+{
+	CvBeliefXMLEntries* pBeliefs = GC.GetGameBeliefs();
+	int rtnValue = 0;
+
+	for(int i = 0; i < pBeliefs->GetNumBeliefs(); i++)
+	{
+		if(HasBelief((BeliefTypes)i))
+		{
+			rtnValue += pBeliefs->GetEntry(i)->GetSpecialistYieldChange(eSpecialist, eYieldType);
+		}
+	}
+
+	return rtnValue;
+}
+
+int CvReligionBeliefs::GetCapitalYieldChange(int iPopulation, YieldTypes eYield) const
+{
+	CvBeliefXMLEntries* pBeliefs = GC.GetGameBeliefs();
+	int rtnValue = 0;
+
+	for(int i = 0; i < pBeliefs->GetNumBeliefs(); i++)
+	{
+		if(HasBelief((BeliefTypes)i))
+		{
+			if(iPopulation >= pBeliefs->GetEntry(i)->GetMinPopulation())
+			{
+				rtnValue += pBeliefs->GetEntry(i)->GetCapitalYieldChange(eYield);
+			}
+		}
+	}
+
+	return rtnValue;
+}
+
+int CvReligionBeliefs::GetCoastalCityYieldChange(int iPopulation, YieldTypes eYield) const
+{
+	CvBeliefXMLEntries* pBeliefs = GC.GetGameBeliefs();
+	int rtnValue = 0;
+
+	for(int i = 0; i < pBeliefs->GetNumBeliefs(); i++)
+	{
+		if(HasBelief((BeliefTypes)i))
+		{
+			if(iPopulation >= pBeliefs->GetEntry(i)->GetMinPopulation())
+			{
+				rtnValue += pBeliefs->GetEntry(i)->GetCoastalCityYieldChange(eYield);
+			}
+		}
+	}
+
+	return rtnValue;
+}
+
+int CvReligionBeliefs::GetGreatWorkYieldChange(int iPopulation, YieldTypes eYield) const
+{
+	CvBeliefXMLEntries* pBeliefs = GC.GetGameBeliefs();
+	int rtnValue = 0;
+
+	for(int i = 0; i < pBeliefs->GetNumBeliefs(); i++)
+	{
+		if(HasBelief((BeliefTypes)i))
+		{
+			if(iPopulation >= pBeliefs->GetEntry(i)->GetMinPopulation())
+			{
+				rtnValue += pBeliefs->GetEntry(i)->GetGreatWorkYieldChange(eYield);
+			}
+		}
+	}
+
+	return rtnValue;
+}
+
+/// Do we get one of our yields from defeating an enemy?
+int CvReligionBeliefs::GetYieldFromKills(YieldTypes eYieldType) const
+{
+	CvBeliefXMLEntries* pBeliefs = GC.GetGameBeliefs();
+	int rtnValue = 0;
+
+	for(int i = 0; i < pBeliefs->GetNumBeliefs(); i++)
+	{
+		if(HasBelief((BeliefTypes)i))
+		{
+			rtnValue += pBeliefs->GetEntry(i)->GetYieldFromKills(eYieldType);
+		}
+	}
+
+	return rtnValue;
+}
+#endif
+
+#if defined(MOD_RELIGION_PLOT_YIELDS)
+/// Get yield change from beliefs for a specific plot
+int CvReligionBeliefs::GetPlotYieldChange(PlotTypes ePlot, YieldTypes eYieldType) const
+{
+	CvBeliefXMLEntries* pBeliefs = GC.GetGameBeliefs();
+	int rtnValue = 0;
+
+	if (MOD_RELIGION_PLOT_YIELDS) {
+		for(int i = 0; i < pBeliefs->GetNumBeliefs(); i++)
+		{
+			if(HasBelief((BeliefTypes)i))
+			{
+				rtnValue += pBeliefs->GetEntry(i)->GetPlotYieldChange(ePlot, eYieldType);
+			}
+		}
+	}
+
+	return rtnValue;
+}
+#endif
+
 // Get happiness boost from a resource
 int CvReligionBeliefs::GetResourceHappiness(ResourceTypes eResource) const
 {
@@ -1639,6 +1876,7 @@ void CvReligionBeliefs::Read(FDataStream& kStream)
 	// Version number to maintain backwards compatibility
 	uint uiVersion;
 	kStream >> uiVersion;
+	MOD_SERIALIZE_INIT_READ(kStream);
 
 	kStream >> m_iFaithFromDyingUnits;
 	kStream >> m_iRiverHappiness;
@@ -1693,6 +1931,7 @@ void CvReligionBeliefs::Write(FDataStream& kStream) const
 	// Current version number
 	uint uiVersion = 2;
 	kStream << uiVersion;
+	MOD_SERIALIZE_INIT_WRITE(kStream);
 
 	kStream << m_iFaithFromDyingUnits;
 	kStream << m_iRiverHappiness;

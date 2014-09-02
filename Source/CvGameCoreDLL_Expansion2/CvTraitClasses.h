@@ -72,6 +72,9 @@ public:
 	int GetSeaBarbarianConversionPercent() const;
 	int GetCapitalBuildingModifier() const;
 	int GetPlotBuyCostModifier() const;
+#if defined(MOD_TRAITS_CITY_WORKING)
+	int GetCityWorkingChange() const;
+#endif
 	int GetPlotCultureCostModifier() const;
 	int GetCultureFromKills() const;
 	int GetFaithFromKills() const;
@@ -116,6 +119,9 @@ public:
 	int GetWorkerSpeedModifier() const;
 	int GetAfraidMinorPerTurnInfluence() const;
 	int GetLandTradeRouteRangeBonus() const;
+#if defined(MOD_TRAITS_TRADE_ROUTE_BONUSES)
+	int GetSeaTradeRouteRangeBonus() const;
+#endif
 	int GetTradeReligionModifier() const;
 	int GetTradeBuildingModifier() const;
 
@@ -134,9 +140,15 @@ public:
 	bool IsTechBoostFromCapitalScienceBuildings() const;
 	bool IsStaysAliveZeroCities() const;
 	bool IsFaithFromUnimprovedForest() const;
+#if defined(MOD_TRAITS_ANY_BELIEF)
+	bool IsAnyBelief() const;
+#endif
 	bool IsBonusReligiousBelief() const;
 	bool IsAbleToAnnexCityStates() const;
 	bool IsCrossesMountainsAfterGreatGeneral() const;
+#if defined(MOD_TRAITS_CROSSES_ICE)
+	bool IsCrossesIce() const;
+#endif
 	bool IsMayaCalendarBonuses() const;
 	bool IsNoAnnexing() const;
 	bool IsTechFromCityConquer() const;
@@ -162,6 +174,21 @@ public:
 	int GetMovesChangeUnitCombat(const int unitCombatID) const;
 	int GetMaintenanceModifierUnitCombat(const int unitCombatID) const;
 	int GetImprovementYieldChanges(ImprovementTypes eIndex1, YieldTypes eIndex2) const;
+#if defined(MOD_API_UNIFIED_YIELDS) && defined(MOD_API_PLOT_YIELDS)
+	int GetPlotYieldChanges(PlotTypes eIndex1, YieldTypes eIndex2) const;
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS)
+	int GetCapitalYieldChanges(int i) const;
+	int GetCityYieldChanges(int i) const;
+	int GetCoastalCityYieldChanges(int i) const;
+	int GetGreatWorkYieldChanges(int i) const;
+	int GetFeatureYieldChanges(FeatureTypes eIndex1, YieldTypes eIndex2) const;
+	int GetResourceYieldChanges(ResourceTypes eIndex1, YieldTypes eIndex2) const;
+	int GetTerrainYieldChanges(TerrainTypes eIndex1, YieldTypes eIndex2) const;
+	int GetYieldFromKills(YieldTypes eYield) const;
+	int GetYieldChangeTradeRoute(int i) const;
+	int GetYieldChangeWorldWonder(int i) const;
+#endif
 	int GetSpecialistYieldChanges(SpecialistTypes eIndex1, YieldTypes eIndex2) const;
 	int GetUnimprovedFeatureYieldChanges(FeatureTypes eIndex1, YieldTypes eIndex2) const;
 	FreeResourceXCities GetFreeResourceXCities(ResourceTypes eResource) const;
@@ -194,6 +221,9 @@ protected:
 	int m_iSeaBarbarianConversionPercent;
 	int m_iCapitalBuildingModifier;
 	int m_iPlotBuyCostModifier;
+#if defined(MOD_TRAITS_CITY_WORKING)
+	int m_iCityWorkingChange;
+#endif
 	int m_iPlotCultureCostModifier;
 	int m_iCultureFromKills;
 	int m_iFaithFromKills;
@@ -240,6 +270,9 @@ protected:
 	int m_iWorkerSpeedModifier;
 	int m_iAfraidMinorPerTurnInfluence;
 	int m_iLandTradeRouteRangeBonus;
+#if defined(MOD_TRAITS_TRADE_ROUTE_BONUSES)
+	int m_iSeaTradeRouteRangeBonus;
+#endif
 	int m_iTradeReligionModifier;
 	int m_iTradeBuildingModifier;
 
@@ -258,9 +291,15 @@ protected:
 	bool m_bTechBoostFromCapitalScienceBuildings;
 	bool m_bStaysAliveZeroCities;
 	bool m_bFaithFromUnimprovedForest;
+#if defined(MOD_TRAITS_ANY_BELIEF)
+	bool m_bAnyBelief;
+#endif
 	bool m_bBonusReligiousBelief;
 	bool m_bAbleToAnnexCityStates;
 	bool m_bCrossesMountainsAfterGreatGeneral;
+#if defined(MOD_TRAITS_CROSSES_ICE)
+	bool m_bCrossesIce;
+#endif
 	bool m_bMayaCalendarBonuses;
 	bool m_bNoAnnexing;
 	bool m_bTechFromCityConquer;
@@ -283,6 +322,21 @@ protected:
 	int* m_piMovesChangeUnitCombats;
 	int* m_piMaintenanceModifierUnitCombats;
 	int** m_ppiImprovementYieldChanges;
+#if defined(MOD_API_UNIFIED_YIELDS) && defined(MOD_API_PLOT_YIELDS)
+	int** m_ppiPlotYieldChanges;
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS)
+	int* m_paiCapitalYieldChanges;
+	int* m_paiCityYieldChanges;
+	int* m_paiCoastalCityYieldChanges;
+	int* m_paiGreatWorkYieldChanges;
+	int** m_ppiFeatureYieldChanges;
+	int** m_ppiResourceYieldChanges;
+	int** m_ppiTerrainYieldChanges;
+	int* m_paiYieldFromKills;
+	int* m_paiYieldChangeTradeRoute;
+	int* m_paiYieldChangeWorldWonder;
+#endif
 	int** m_ppiSpecialistYieldChanges;
 	int** m_ppiUnimprovedFeatureYieldChanges;
 
@@ -426,6 +480,12 @@ public:
 	{
 		return m_iPlotBuyCostModifier;
 	};
+#if defined(MOD_TRAITS_CITY_WORKING)
+	int GetCityWorkingChange() const
+	{
+		return m_iCityWorkingChange;
+	};
+#endif
 	int GetPlotCultureCostModifier() const
 	{
 		return m_iPlotCultureCostModifier;
@@ -600,6 +660,12 @@ public:
 	{
 		return m_iLandTradeRouteRangeBonus;
 	}
+#if defined(MOD_TRAITS_TRADE_ROUTE_BONUSES)
+	int GetSeaTradeRouteRangeBonus() const
+	{
+		return m_iSeaTradeRouteRangeBonus;
+	}
+#endif
 	int GetTradeReligionModifier() const
 	{
 		return m_iTradeReligionModifier;
@@ -649,6 +715,12 @@ public:
 	{
 		return m_bFaithFromUnimprovedForest;
 	};
+#if defined(MOD_TRAITS_ANY_BELIEF)
+	bool IsAnyBelief() const
+	{
+		return m_bAnyBelief;
+	};
+#endif
 	bool IsBonusReligiousBelief() const
 	{
 		return m_bBonusReligiousBelief;
@@ -661,6 +733,12 @@ public:
 	{
 		return m_bCrossesMountainsAfterGreatGeneral;
 	};
+#if defined(MOD_TRAITS_CROSSES_ICE)
+	bool IsCrossesIce() const
+	{
+		return m_bCrossesIce;
+	};
+#endif
 	bool IsMayaCalendarBonuses() const
 	{
 		return m_bMayaCalendarBonuses;
@@ -725,6 +803,39 @@ public:
 	int GetMovesChangeUnitCombat(const int unitCombatID) const;
 	int GetMaintenanceModifierUnitCombat(const int unitCombatID) const;
 	int GetImprovementYieldChange(ImprovementTypes eImprovement, YieldTypes eYield) const;
+#if defined(MOD_API_UNIFIED_YIELDS) && defined(MOD_API_PLOT_YIELDS)
+	int GetPlotYieldChange(PlotTypes ePlot, YieldTypes eYield) const;
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS)
+	int GetCapitalYieldChanges(YieldTypes eYield) const
+	{
+		return m_iCapitalYieldChanges[(int)eYield];
+	};
+	int GetCityYieldChanges(YieldTypes eYield) const
+	{
+		return m_iCityYieldChanges[(int)eYield];
+	};
+	int GetCoastalCityYieldChanges(YieldTypes eYield) const
+	{
+		return m_iCoastalCityYieldChanges[(int)eYield];
+	};
+	int GetGreatWorkYieldChanges(YieldTypes eYield) const
+	{
+		return m_iGreatWorkYieldChanges[(int)eYield];
+	};
+	int GetFeatureYieldChange(FeatureTypes eFeature, YieldTypes eYield) const;
+	int GetResourceYieldChange(ResourceTypes eResource, YieldTypes eYield) const;
+	int GetTerrainYieldChange(TerrainTypes eTerrain, YieldTypes eYield) const;
+	int GetYieldFromKills(YieldTypes eYield) const;
+	int GetYieldChangeTradeRoute(YieldTypes eYield) const
+	{
+		return m_iYieldChangeTradeRoute[(int)eYield];
+	};
+	int GetYieldChangeWorldWonder(YieldTypes eYield) const
+	{
+		return m_iYieldChangeWorldWonder[(int)eYield];
+	};
+#endif
 	int GetSpecialistYieldChange(SpecialistTypes eSpecialist, YieldTypes eYield) const;
 	int GetUnimprovedFeatureYieldChange(FeatureTypes eFeature, YieldTypes eYield) const;
 	FreeResourceXCities GetFreeResourceXCities(ResourceTypes eResource) const;
@@ -754,6 +865,9 @@ public:
 		return m_eCombatBonusImprovement;
 	};
 	bool IsAbleToCrossMountains() const;
+#if defined(MOD_TRAITS_CROSSES_ICE)
+	bool IsAbleToCrossIce() const;
+#endif
 
 	bool NoTrain(UnitClassTypes eUnitClassType);
 
@@ -799,6 +913,9 @@ private:
 	int m_iSeaBarbarianConversionPercent;
 	int m_iCapitalBuildingModifier;
 	int m_iPlotBuyCostModifier;
+#if defined(MOD_TRAITS_CITY_WORKING)
+	int m_iCityWorkingChange;
+#endif
 	int m_iPlotCultureCostModifier;
 	int m_iCultureFromKills;
 	int m_iFaithFromKills;
@@ -843,6 +960,9 @@ private:
 	int m_iWorkerSpeedModifier;
 	int m_iAfraidMinorPerTurnInfluence; 
 	int m_iLandTradeRouteRangeBonus;
+#if defined(MOD_TRAITS_TRADE_ROUTE_BONUSES)
+	int m_iSeaTradeRouteRangeBonus;
+#endif
 	int m_iTradeReligionModifier;
 	int m_iTradeBuildingModifier;
 	// Saved
@@ -857,9 +977,15 @@ private:
 	bool m_bTechBoostFromCapitalScienceBuildings;
 	bool m_bStaysAliveZeroCities;
 	bool m_bFaithFromUnimprovedForest;
+#if defined(MOD_TRAITS_ANY_BELIEF)
+	bool m_bAnyBelief;
+#endif
 	bool m_bBonusReligiousBelief;
 	bool m_bAbleToAnnexCityStates;
 	bool m_bCrossesMountainsAfterGreatGeneral;
+#if defined(MOD_TRAITS_CROSSES_ICE)
+	bool m_bCrossesIce;
+#endif
 	bool m_bMayaCalendarBonuses;
 	bool m_bNoAnnexing;
 	bool m_bTechFromCityConquer;
@@ -900,6 +1026,21 @@ private:
 	std::vector<int> m_paiMaintenanceModifierUnitCombat;
 
 	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiImprovementYieldChange;
+#if defined(MOD_API_UNIFIED_YIELDS) && defined(MOD_API_PLOT_YIELDS)
+	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiPlotYieldChange;
+#endif
+#if defined(MOD_API_UNIFIED_YIELDS)
+	int m_iCityYieldChanges[NUM_YIELD_TYPES];
+	int m_iCapitalYieldChanges[NUM_YIELD_TYPES];
+	int m_iCoastalCityYieldChanges[NUM_YIELD_TYPES];
+	int m_iGreatWorkYieldChanges[NUM_YIELD_TYPES];
+	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiFeatureYieldChange;
+	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiResourceYieldChange;
+	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiTerrainYieldChange;
+	int m_iYieldFromKills[NUM_YIELD_TYPES];
+	int m_iYieldChangeTradeRoute[NUM_YIELD_TYPES];
+	int m_iYieldChangeWorldWonder[NUM_YIELD_TYPES];
+#endif
 	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiSpecialistYieldChange;
 	std::vector< Firaxis::Array<int, NUM_YIELD_TYPES > > m_ppaaiUnimprovedFeatureYieldChange;
 
