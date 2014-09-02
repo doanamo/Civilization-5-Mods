@@ -18,6 +18,8 @@
 #include "CvNotifications.h"
 #include "CvDiplomacyRequests.h"
 
+#include "QuietDiplomacy.h"
+
 // must be included after all other headers
 #include "LintFree.h"
 
@@ -10817,9 +10819,10 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 			if(eMinorCiv != NO_PLAYER)
 			{
 				const char* strMinorCivKey = GET_PLAYER(eMinorCiv).getNameKey();
-
 				szText = GetDiploStringForMessage(DIPLO_MESSAGE_HUMAN_KILLED_PROTECTED_CITY_STATE, NO_PLAYER, strMinorCivKey);
-				CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+				QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+				//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 			}
 		}
 	}
@@ -10884,7 +10887,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_EXPANSION_BROKEN_PROMISE);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -10914,7 +10919,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_PLOT_BUYING_BROKEN_PROMISE);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11006,8 +11013,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_END_WORK_WITH_US, ePlayer);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_NEGATIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_NEGATIVE);
 		}
 		else if(!bHuman)
 		{
@@ -11026,8 +11034,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_WORK_AGAINST_SOMEONE, ePlayer);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11041,8 +11050,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_AI_DOF_BACKSTAB, ePlayer);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11077,7 +11087,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 					if(eTarget == GC.getGame().getActivePlayer())
 					{
 						szText = GetDiploStringForMessage(DIPLO_MESSAGE_WORK_AGAINST_SOMEONE, eTarget);
-						CvDiplomacyRequests::SendRequest(ePlayer, eTarget, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+						QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+						//CvDiplomacyRequests::SendRequest(ePlayer, eTarget, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 					}
 				}
 				else
@@ -11436,7 +11448,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_NOW_UNFORGIVABLE);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11446,7 +11460,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_NOW_ENEMY);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11549,8 +11565,10 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 						CvAssertMsg(false, "Unknown intrigue type");
 						break;
 					}
+					
+					QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-					CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+					//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 				}
 
 			}
@@ -11594,7 +11612,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_INSULT_ROOT);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11608,7 +11628,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_COMPLIMENT);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11622,7 +11644,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_BOOT_KISSING);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11632,7 +11656,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_WARMONGER);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11645,7 +11671,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 			const char* strMinorCivKey = GET_PLAYER(eMinorCiv).getNameKey();
 
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_MINOR_CIV_COMPETITION, NO_PLAYER, strMinorCivKey);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_NEGATIVE);
 		}
 	}
 
@@ -11657,8 +11685,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 			PlayerTypes eTarget = (PlayerTypes) iData1;
 			const char* strTargetCivKey = GET_PLAYER(eTarget).getCivilizationShortDescriptionKey();
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_HUMAN_DOFED_ENEMY, ePlayer, strTargetCivKey);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11670,8 +11699,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 			PlayerTypes eTarget = (PlayerTypes) iData1;
 			const char* strTargetCivKey = GET_PLAYER(eTarget).getCivilizationShortDescriptionKey();
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_HUMAN_DENOUNCED_FRIEND, ePlayer, strTargetCivKey);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_HUMAN, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11683,8 +11713,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 			PlayerTypes eTarget = (PlayerTypes) iData1;
 			const char* strTargetCivKey = GET_PLAYER(eTarget).getCivilizationShortDescriptionKey();
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_HUMAN_DENOUNCED_ENEMY, ePlayer, strTargetCivKey);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11696,8 +11727,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 			PlayerTypes eTarget = (PlayerTypes) iData1;
 			const char* strTargetCivKey = GET_PLAYER(eTarget).getCivilizationShortDescriptionKey();
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_HUMAN_DOFED_FRIEND, ePlayer, strTargetCivKey);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11709,8 +11741,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 			PlayerTypes eTarget = (PlayerTypes) iData1;
 			const char* strTargetCivKey = GET_PLAYER(eTarget).getCivilizationShortDescriptionKey();
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_HUMAN_DENOUNCE_SO_AI_DOF, ePlayer, strTargetCivKey);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11722,8 +11755,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 			PlayerTypes eTarget = (PlayerTypes) iData1;
 			const char* strTargetCivKey = GET_PLAYER(eTarget).getCivilizationShortDescriptionKey();
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_HUMAN_DOF_SO_AI_DENOUNCE, ePlayer, strTargetCivKey);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION_MEAN_AI, szText, LEADERHEAD_ANIM_HATE_NEGATIVE);
 		}
 	}
 
@@ -11735,8 +11769,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 			PlayerTypes eTarget = (PlayerTypes) iData1;
 			const char* strTargetCivKey = GET_PLAYER(eTarget).getCivilizationShortDescriptionKey();
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_HUMAN_DENOUNCE_SO_AI_DENOUNCE, ePlayer, strTargetCivKey);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11748,8 +11783,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 			PlayerTypes eTarget = (PlayerTypes) iData1;
 			const char* strTargetCivKey = GET_PLAYER(eTarget).getCivilizationShortDescriptionKey();
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_HUMAN_DOF_SO_AI_DOF, ePlayer, strTargetCivKey);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
 
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11759,7 +11795,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_SAME_POLICIES_FREEDOM);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11768,7 +11806,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_SAME_POLICIES_ORDER);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11777,7 +11817,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_SAME_POLICIES_AUTOCRACY);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11792,7 +11834,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 				sLeagueName = pLeague->GetName();
 			}
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_WE_LIKED_THEIR_PROPOSAL, ePlayer, sLeagueName);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11807,7 +11851,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 				sLeagueName = pLeague->GetName();
 			}
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_WE_DISLIKED_THEIR_PROPOSAL, ePlayer, sLeagueName);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
 		}
 	}
 
@@ -11817,7 +11863,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		{
 			Localization::String sLeagueName = Localization::Lookup("TXT_KEY_LEAGUE_WORLD_CONGRESS_GENERIC");
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_THEY_SUPPORTED_OUR_PROPOSAL, ePlayer, sLeagueName);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11827,7 +11875,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		{
 			Localization::String sLeagueName = Localization::Lookup("TXT_KEY_LEAGUE_WORLD_CONGRESS_GENERIC");
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_THEY_FOILED_OUR_PROPOSAL, ePlayer, sLeagueName);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
 		}
 	}
 
@@ -11842,7 +11892,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 				sLeagueName = pLeague->GetName();
 			}
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_THEY_SUPPORTED_OUR_HOSTING, ePlayer, sLeagueName);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -11852,7 +11904,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_YOUR_IDEOLOGY_CAUSING_CIVIL_UNREST_FREEDOM);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
 		}
 	}	
 	else if(eStatement == DIPLO_STATEMENT_YOUR_IDEOLOGY_CAUSING_CIVIL_UNREST_ORDER)
@@ -11860,7 +11914,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_YOUR_IDEOLOGY_CAUSING_CIVIL_UNREST_ORDER);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
 		}
 	}
 	else if(eStatement == DIPLO_STATEMENT_YOUR_IDEOLOGY_CAUSING_CIVIL_UNREST_AUTOCRACY)
@@ -11868,7 +11924,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_YOUR_IDEOLOGY_CAUSING_CIVIL_UNREST_AUTOCRACY);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
 		}
 	}
 	else if(eStatement == DIPLO_STATEMENT_OUR_IDEOLOGY_CAUSING_CIVIL_UNREST_FREEDOM)
@@ -11876,7 +11934,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_OUR_IDEOLOGY_CAUSING_CIVIL_UNREST_FREEDOM);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}	
 	else if(eStatement == DIPLO_STATEMENT_OUR_IDEOLOGY_CAUSING_CIVIL_UNREST_ORDER)
@@ -11884,7 +11944,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_OUR_IDEOLOGY_CAUSING_CIVIL_UNREST_ORDER);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}	
 	else if(eStatement == DIPLO_STATEMENT_OUR_IDEOLOGY_CAUSING_CIVIL_UNREST_AUTOCRACY)
@@ -11892,7 +11954,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_OUR_IDEOLOGY_CAUSING_CIVIL_UNREST_AUTOCRACY);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 	else if(eStatement == DIPLO_STATEMENT_SWITCH_OUR_IDEOLOGY_FREEDOM)
@@ -11900,7 +11964,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_SWITCH_OUR_IDEOLOGY_FREEDOM);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 	else if(eStatement == DIPLO_STATEMENT_SWITCH_OUR_IDEOLOGY_ORDER)
@@ -11908,7 +11974,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_SWITCH_OUR_IDEOLOGY_ORDER);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 	else if(eStatement == DIPLO_STATEMENT_SWITCH_OUR_IDEOLOGY_AUTOCRACY)
@@ -11916,7 +11984,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_SWITCH_OUR_IDEOLOGY_AUTOCRACY);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 	else if(eStatement == DIPLO_STATEMENT_YOUR_CULTURE_INFLUENTIAL)
@@ -11924,7 +11994,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_YOUR_CULTURE_INFLUENTIAL);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_NEGATIVE);
 		}
 	}
 	else if(eStatement == DIPLO_STATEMENT_OUR_CULTURE_INFLUENTIAL)
@@ -11932,7 +12004,9 @@ void CvDiplomacyAI::DoSendStatementToPlayer(PlayerTypes ePlayer, DiploStatementT
 		if(bShouldShowLeaderScene)
 		{
 			szText = GetDiploStringForMessage(DIPLO_MESSAGE_OUR_CULTURE_INFLUENTIAL);
-			CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
+			QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), szText);
+
+			//CvDiplomacyRequests::SendRequest(GetPlayer()->GetID(), ePlayer, DIPLO_UI_STATE_BLANK_DISCUSSION, szText, LEADERHEAD_ANIM_POSITIVE);
 		}
 	}
 
@@ -22319,9 +22393,13 @@ void CvDiplomacyAI::ChangeNumCiviliansReturnedToMe(PlayerTypes ePlayer, int iCha
 			{
 				if(GC.getGame().getActivePlayer() == ePlayer)
 				{
-					GC.GetEngineUserInterface()->SetForceDiscussionModeQuitOnBack(true);		// Set force quit so that when discuss mode pops up the Back button won't go to leader root
 					const char* strText = GetDiploStringForMessage(DIPLO_MESSAGE_RETURNED_CIVILIAN);
+					QuietDiplomacy::CreateNotification(&GET_PLAYER(ePlayer), GetPlayer(), strText);
+
+					/*
+					GC.GetEngineUserInterface()->SetForceDiscussionModeQuitOnBack(true);		// Set force quit so that when discuss mode pops up the Back button won't go to leader root
 					gDLL->GameplayDiplomacyAILeaderMessage(GetPlayer()->GetID(), DIPLO_UI_STATE_BLANK_DISCUSSION, strText, LEADERHEAD_ANIM_POSITIVE);
+					*/
 				}
 			}
 		}

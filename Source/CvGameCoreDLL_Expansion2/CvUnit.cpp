@@ -43,6 +43,8 @@
 #include "CvGameQueries.h"
 #include "CvBarbarians.h"
 
+#include "QuietDiplomacy.h"
+
 #if !defined(FINAL_RELEASE)
 #include <sstream>
 
@@ -9021,9 +9023,13 @@ void CvUnit::PerformCultureBomb(int iRadius)
 				{
 					bAlreadyShownLeader = true;
 
-					DLLUI->SetForceDiscussionModeQuitOnBack(true);		// Set force quit so that when discuss mode pops up the Back button won't go to leader root
 					const char* strText = pPlayer->GetDiplomacyAI()->GetDiploStringForMessage(DIPLO_MESSAGE_CULTURE_BOMBED);
+					QuietDiplomacy::CreateNotification(&GET_PLAYER(getOwner()), pPlayer, strText);
+
+					/*
+					DLLUI->SetForceDiscussionModeQuitOnBack(true);		// Set force quit so that when discuss mode pops up the Back button won't go to leader root
 					gDLL->GameplayDiplomacyAILeaderMessage(pPlayer->GetID(), DIPLO_UI_STATE_BLANK_DISCUSSION, strText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+					*/
 				}
 			}
 		}

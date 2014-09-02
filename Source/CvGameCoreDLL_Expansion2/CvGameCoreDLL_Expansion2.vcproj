@@ -132,6 +132,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\CustomMods.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CvAchievementInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CvAchievementUnlocker.cpp"
 				>
 			</File>
@@ -352,6 +360,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\CvPlotInfo.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\CvPlotManager.cpp"
 				>
 			</File>
@@ -511,6 +523,14 @@
 			>
 			<File
 				RelativePath=".\banned.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CustomMods.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CvAchievementInfo.h"
 				>
 			</File>
 			<File
@@ -755,6 +775,10 @@
 			</File>
 			<File
 				RelativePath=".\CvPlot.h"
+				>
+			</File>
+			<File
+				RelativePath=".\CvPlotInfo.h"
 				>
 			</File>
 			<File
@@ -1475,6 +1499,18 @@
 			</File>
 			<File
 				RelativePath=".\Lua\CvLuaUnit.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="External"
+			>
+			<File
+				RelativePath=".\QuietDiplomacy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\QuietDiplomacy.h"
 				>
 			</File>
 		</Filter>
