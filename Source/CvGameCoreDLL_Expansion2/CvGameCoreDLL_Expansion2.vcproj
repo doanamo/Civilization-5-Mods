@@ -1478,6 +1478,18 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="External"
+			>
+			<File
+				RelativePath=".\QuietDiplomacy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\QuietDiplomacy.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath=".\CvGameCoreDLL.rc"
 			>

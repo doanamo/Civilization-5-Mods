@@ -5,10 +5,14 @@
     <ProjectGuid>{bb945541-c001-4d1d-81a0-88477919f70a}</ProjectGuid>
     <Name>Quiet Diplomacy</Name>
     <Guid>6e696d4d-c5a7-4505-ba3a-13742cc16b29</Guid>
-    <ModVersion>1</ModVersion>
-    <Stability>Experimental</Stability>
+    <ModVersion>2</ModVersion>
+    <Stability>Alpha</Stability>
     <Teaser>Replaces some of the annoying leader screen popups with notifications.</Teaser>
-    <Description>Replaces some of the annoying leader screen popups where decisions don't have any effect on the game with notifications above the minimap.</Description>
+    <Description>Important: This mod uses a custom DLL. Only one mod that modifies the DLL can be activated at once. Compatible with BNW only (for now).
+
+Replaces some of the annoying leader screen popups (where decisions don't have any effect on the game) with notifications above the minimap. This results in much faster AI turns since you don't have to click anything to resume turn processing.
+
+Visit the Steam Workshop page for change logs and more info.</Description>
     <Authors>gunstarpl</Authors>
     <SpecialThanks>
     </SpecialThanks>
@@ -34,12 +38,7 @@
     <DeployMod>true</DeployMod>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="UI" />
-    <Folder Include="UI\InGame" />
-    <Folder Include="UI\InGame\LeaderHead" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="UI\InGame\LeaderHead\LeaderHeadRoot.lua">
+    <Content Include="CvGameCore_Expansion2.dll">
       <SubType>Lua</SubType>
       <ImportIntoVFS>True</ImportIntoVFS>
     </Content>

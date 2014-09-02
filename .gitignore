@@ -5,3 +5,4 @@ Source/BuildOutput/
 Source/BuildTemp/
 *.ncb
 *.suo
+*.user
