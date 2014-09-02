@@ -74,7 +74,7 @@
 				Name="VCLinkerTool"
 				AdditionalDependencies="CvWorldBuilderMapWin32.lib CvGameCoreDLLUtilWin32.lib CvLocalizationWin32.lib CvGameDatabaseWin32.lib FireWorksWin32.lib FLuaWin32.lib lua51_Win32.lib winmm.lib"
 				OutputFile="$(OutDir)\CvGameCore_Expansion2.dll"
-				LinkIncremental="1"
+				LinkIncremental="2"
 				SuppressStartupBanner="false"
 				AdditionalLibraryDirectories="&quot;$(SolutionDir)\CvWorldBuilderMap\lib\&quot;;&quot;$(SolutionDir)\CvGameCoreDLLUtil\lib\&quot;;&quot;$(SolutionDir)\CvLocalization\lib\&quot;;&quot;$(SolutionDir)\CvGameDatabase\lib\&quot;;&quot;$(SolutionDir)FirePlace\lib\&quot;;&quot;$(SolutionDir)ThirdPartyLibs\Lua51\lib\&quot;"
 				ModuleDefinitionFile="$(ProjectDir)CvGameCoreDLL.def"
