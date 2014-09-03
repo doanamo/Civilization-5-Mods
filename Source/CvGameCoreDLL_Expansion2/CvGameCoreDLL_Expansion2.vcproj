@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Mod|Win32"
-			OutputDirectory="$(SolutionDir)\BuildOutput\VS2008_$(ConfigurationName)$(PlatformName)\"
-			IntermediateDirectory="$(SolutionDir)\BuildTemp\VS2008_$(ProjectName)$(ConfigurationName)$(PlatformName)\"
+			OutputDirectory="$(SolutionDir)\BuildOutput\VS2008_$(ConfigurationName)$(PlatformName)_whoward\"
+			IntermediateDirectory="$(SolutionDir)\BuildTemp\VS2008_$(ProjectName)$(ConfigurationName)$(PlatformName)_whoward\"
 			ConfigurationType="2"
 			CharacterSet="2"
 			WholeProgramOptimization="0"
@@ -109,6 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy /Y &quot;$(OutDir)\CvGameCore_Expansion2.dll&quot; &quot;..\..\Quiet Diplomacy\CvGameCore_Expansion2.dll.whoward&quot;;"
 			/>
 		</Configuration>
 	</Configurations>
