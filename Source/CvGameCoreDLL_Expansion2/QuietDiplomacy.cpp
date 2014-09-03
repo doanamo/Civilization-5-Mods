@@ -26,8 +26,7 @@ void QuietDiplomacy::CreateNotification(CvPlayer* human, CvPlayer* computer, con
 		int y = -1;
 
 		CvCity* computerCapital = computer->getCapitalCity();
-
-		if(computerCapital->isRevealed(human->getTeam(), false))
+		if(computerCapital && computerCapital->isRevealed(human->getTeam(), false))
 		{
 			x = computerCapital->getX();
 			y = computerCapital->getY();

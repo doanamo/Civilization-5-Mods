@@ -5,8 +5,8 @@
     <ProjectGuid>{bb945541-c001-4d1d-81a0-88477919f70a}</ProjectGuid>
     <Name>Quiet Diplomacy</Name>
     <Guid>6e696d4d-c5a7-4505-ba3a-13742cc16b29</Guid>
-    <ModVersion>4</ModVersion>
-    <Stability>Alpha</Stability>
+    <ModVersion>5</ModVersion>
+    <Stability>Beta</Stability>
     <Teaser>Replaces some of the annoying leader screen popups with notifications.</Teaser>
     <Description>Important: This mod uses a custom DLL. Only one mod that modifies the DLL can be activated at once. Compatible with BNW only (for now).
 

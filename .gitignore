@@ -6,3 +6,4 @@ Source/BuildTemp/
 *.ncb
 *.suo
 *.user
+Quiet Diplomacy/*.dll
