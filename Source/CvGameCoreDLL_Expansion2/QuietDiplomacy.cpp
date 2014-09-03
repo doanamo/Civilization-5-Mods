@@ -33,6 +33,6 @@ void QuietDiplomacy::CreateNotification(CvPlayer* human, CvPlayer* computer, con
 			y = computerCapital->getY();
 		}
 
-		pNotifications->Add(NOTIFICATION_MINOR, szMessage.c_str(), szSummary.c_str(), x, y, -1);
+		pNotifications->Add(NOTIFICATION_PEACE_ACTIVE_PLAYER, szMessage.c_str(), szSummary.c_str(), x, y, computer->GetID());
 	}
 }
