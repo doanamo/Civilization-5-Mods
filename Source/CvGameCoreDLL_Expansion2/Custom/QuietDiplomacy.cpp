@@ -10,19 +10,17 @@ bool QuietDiplomacy::LeaderDiscussion(CvPlayer* human, CvPlayer* computer, const
     CvAssertMsg(human->isHuman(), "Quiet Diplomacy: Not a human!");
 
     // Send a notification.
-    CvNotifications* pNotifications = human->GetNotifications();
+    CvNotifications* notifications = human->GetNotifications();
     
-    if(pNotifications)
+    if(notifications)
     {
-        // Create notification strings.
-        std::string szMessage;
-        szMessage += computer->getName();
-        szMessage += ": ";
-        szMessage += text;
+        // Create strings.
+        Localization::String message = Localization::Lookup("TXT_KEY_QUIETDIPLOMACY_LEADERDISCUSSION_MESSAGE");
+        message << Localization::Lookup(computer->getNameKey());
+        message << text;
 
-        std::string szSummary;
-        szSummary += "Message from ";
-        szSummary += computer->getName();
+        Localization::String summary = Localization::Lookup("TXT_KEY_QUIETDIPLOMACY_LEADERDISCUSSION_SUMMARY");
+        summary << Localization::Lookup(computer->getNameKey());
 
         // Get computer's capital.
         int x = -1;
@@ -36,7 +34,7 @@ bool QuietDiplomacy::LeaderDiscussion(CvPlayer* human, CvPlayer* computer, const
         }
 
         // Add a notification.
-        pNotifications->Add(NOTIFICATION_PEACE_ACTIVE_PLAYER, szMessage.c_str(), szSummary.c_str(), x, y, computer->GetID());
+        notifications->Add(NOTIFICATION_PEACE_ACTIVE_PLAYER, message.toUTF8(), summary.toUTF8(), x, y, computer->GetID());
     }
 
     // Inform that we took care of it.

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<GameData>
+	<Language_en_US>
+        <Row Tag="TXT_KEY_QUIETDIPLOMACY_LEADERDISCUSSION_SUMMARY">
+			<Text>Message from {1}</Text>
+		</Row>
+        
+        <Row Tag="TXT_KEY_QUIETDIPLOMACY_LEADERDISCUSSION_MESSAGE">
+			<Text>{1}: {2}</Text>
+		</Row>
+    </Language_en_US>
+    
+    <Language_pl_PL>
+        <Row Tag="TXT_KEY_QUIETDIPLOMACY_LEADERDISCUSSION_SUMMARY">
+			<Text>Wiadomość od {1[2]}</Text>
+		</Row>
+        
+        <Row Tag="TXT_KEY_QUIETDIPLOMACY_LEADERDISCUSSION_MESSAGE">
+			<Text>{1}: {2}</Text>
+		</Row>
+    </Language_pl_PL>
+</GameData>
