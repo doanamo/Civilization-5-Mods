@@ -9024,12 +9024,12 @@ void CvUnit::PerformCultureBomb(int iRadius)
 					bAlreadyShownLeader = true;
 
 					const char* strText = pPlayer->GetDiplomacyAI()->GetDiploStringForMessage(DIPLO_MESSAGE_CULTURE_BOMBED);
-					QuietDiplomacy::CreateNotification(&GET_PLAYER(getOwner()), pPlayer, strText);
 
-					/*
-					DLLUI->SetForceDiscussionModeQuitOnBack(true);		// Set force quit so that when discuss mode pops up the Back button won't go to leader root
-					gDLL->GameplayDiplomacyAILeaderMessage(pPlayer->GetID(), DIPLO_UI_STATE_BLANK_DISCUSSION, strText, LEADERHEAD_ANIM_HATE_NEGATIVE);
-					*/
+                    if(!QuietDiplomacy::LeaderDiscussion(&GET_PLAYER(getOwner()), pPlayer, strText))
+                    {
+					    DLLUI->SetForceDiscussionModeQuitOnBack(true);		// Set force quit so that when discuss mode pops up the Back button won't go to leader root
+					    gDLL->GameplayDiplomacyAILeaderMessage(pPlayer->GetID(), DIPLO_UI_STATE_BLANK_DISCUSSION, strText, LEADERHEAD_ANIM_HATE_NEGATIVE);
+                    }
 				}
 			}
 		}

@@ -7,3 +7,6 @@ Source/BuildTemp/
 *.suo
 *.user
 Quiet Diplomacy/*.dll
+Source/ipch/
+*.opensdf
+*.sdf
