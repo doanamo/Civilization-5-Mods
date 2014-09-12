@@ -3,8 +3,8 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Default</Configuration>
     <ProjectGuid>{bb945541-c001-4d1d-81a0-88477919f70a}</ProjectGuid>
-    <Name>Quiet Diplomacy</Name>
-    <Guid>6e696d4d-c5a7-4505-ba3a-13742cc16b29</Guid>
+    <Name>Quiet Diplomacy (Whoward)</Name>
+    <Guid>13b03b91-cb6a-46e9-9d6a-831e6353e5bc</Guid>
     <ModVersion>6</ModVersion>
     <Stability>Beta</Stability>
     <Teaser>Replaces some of the annoying leader screen popups with notifications.</Teaser>
@@ -33,6 +33,24 @@ Visit the Steam Workshop page for change logs and more info.</Description>
         <FileName>Text/QuietDiplomacyText.xml</FileName>
       </Action>
     </ModActions>
+    <ModDependencies>
+      <Association xmlns="">
+        <Type>Mod</Type>
+        <Name>DLL - Various Mod Components</Name>
+        <Id>d1b6328c-ff44-4b0d-aad7-c657f83610cd</Id>
+        <MinVersion>60</MinVersion>
+        <MaxVersion>999</MaxVersion>
+      </Association>
+    </ModDependencies>
+    <ModBlockers>
+      <Association xmlns="">
+        <Type>Mod</Type>
+        <Name>Quiet Diplomacy</Name>
+        <Id>6e696d4d-c5a7-4505-ba3a-13742cc16b29</Id>
+        <MinVersion>0</MinVersion>
+        <MaxVersion>999</MaxVersion>
+      </Association>
+    </ModBlockers>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Default' ">
     <OutputPath>.</OutputPath>
