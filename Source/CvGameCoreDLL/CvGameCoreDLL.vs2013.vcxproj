@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Mod|Win32">
       <Configuration>Mod</Configuration>
@@ -7,9 +7,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>CvGameCoreDLL_Expansion2</ProjectName>
-    <ProjectGuid>{F58F230D-EE4A-40E0-91D5-93626E790055}</ProjectGuid>
-    <RootNamespace>CvGameCoreDLL_Expansion2</RootNamespace>
+    <ProjectName>CvGameCoreDLL</ProjectName>
+    <ProjectGuid>{E323AF8E-688B-4ED7-BA84-269D8F3AAE2D}</ProjectGuid>
+    <RootNamespace>CvGameCoreDLL</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -34,7 +34,7 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'" />
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">CvGameCore_Expansion2</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">$(ProjectName)$(Platform)$(Configuration)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">
     <ClCompile>
@@ -44,46 +44,48 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)CvWorldBuilderMap\include\;$(SolutionDir)CvGameCoreDLLUtil\include\;$(SolutionDir)CvLocalization\include\;$(SolutionDir)CvGameDatabase\include\;$(SolutionDir)FirePlace\include\;$(SolutionDir)FirePlace\include\FireWorks\;$(SolutionDir)ThirdPartyLibs\Lua51\include\;$(ProjectDir);$(ProjectDir)\Custom\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)CvWorldBuilderMap\include\;$(SolutionDir)CvGameCoreDLLUtil\include\;$(SolutionDir)CvLocalization\include\;$(SolutionDir)CvGameDatabase\include\;$(SolutionDir)FirePlace\include\;$(SolutionDir)FirePlace\include\FireWorks\;$(SolutionDir)ThirdPartyLibs\Lua51\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>FXS_IS_DLL;WIN32;NDEBUG;_WINDOWS;_USRDLL;CVGAMECOREDLL_EXPORTS;FINAL_RELEASE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
       <ExceptionHandling>
       </ExceptionHandling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
       <FloatingPointModel>Strict</FloatingPointModel>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>CvGameCoreDLLPCH.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallingConvention>Cdecl</CallingConvention>
       <EnablePREfast>true</EnablePREfast>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>CvWorldBuilderMapWin32.lib;CvGameCoreDLLUtilWin32.lib;CvLocalizationWin32.lib;CvGameDatabaseWin32.lib;FireWorksWin32.lib;FLuaWin32.lib;lua51_Win32.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
+      <OutputFile>$(OutDir)$(ProjectName)$(Platform)$(Configuration).dll</OutputFile>
       <SuppressStartupBanner>false</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(SolutionDir)\CvWorldBuilderMap\lib\;$(SolutionDir)\CvGameCoreDLLUtil\lib\;$(SolutionDir)\CvLocalization\lib\;$(SolutionDir)\CvGameDatabase\lib\;$(SolutionDir)FirePlace\lib\;$(SolutionDir)ThirdPartyLibs\Lua51\lib\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ModuleDefinitionFile>$(ProjectDir)CvGameCoreDLL.def</ModuleDefinitionFile>
+      <DelayLoadDLLs>%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
       <LargeAddressAware>true</LargeAddressAware>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>
+      </LinkTimeCodeGeneration>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
       <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
-      <ModuleDefinitionFile>$(ProjectDir)CvGameCoreDLL.def</ModuleDefinitionFile>
     </Link>
-    <PostBuildEvent>
-      <Command>copy /Y "$(OutDir)\CvGameCore_Expansion2.dll" "..\..\Quiet Diplomacy\CvGameCore_Expansion2.dll"</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Custom\QuietDiplomacy.cpp" />
-    <ClCompile Include="CvCityManager.cpp" />
     <ClCompile Include="CvTargeting.cpp" />
     <ClCompile Include="_precompile.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Create</PrecompiledHeader>
@@ -92,21 +94,25 @@
     <ClCompile Include="CvAdvisorCounsel.cpp" />
     <ClCompile Include="CvAdvisorRecommender.cpp" />
     <ClCompile Include="CvAIOperation.cpp" />
-    <ClCompile Include="CvArea.cpp" />
+    <ClCompile Include="CvArea.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvArmyAI.cpp" />
     <ClCompile Include="CvAStar.cpp" />
     <ClCompile Include="CvBarbarians.cpp" />
-    <ClCompile Include="CvBeliefClasses.cpp" />
     <ClCompile Include="CvBuilderTaskingAI.cpp" />
     <ClCompile Include="CvBuildingClasses.cpp" />
     <ClCompile Include="CvBuildingProductionAI.cpp" />
-    <ClCompile Include="CvCity.cpp" />
-    <ClCompile Include="CvCityAI.cpp" />
+    <ClCompile Include="CvCity.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="CvCityAI.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvCityCitizens.cpp" />
     <ClCompile Include="CvCityConnections.cpp" />
     <ClCompile Include="CvCitySpecializationAI.cpp" />
     <ClCompile Include="CvCityStrategyAI.cpp" />
-    <ClCompile Include="CvCultureClasses.cpp" />
     <ClCompile Include="CvDangerPlots.cpp" />
     <ClCompile Include="CvDatabaseUtility.cpp" />
     <ClCompile Include="CvDealAI.cpp" />
@@ -115,45 +121,63 @@
     <ClCompile Include="CvDiplomacyRequests.cpp" />
     <ClCompile Include="CvEconomicAI.cpp" />
     <ClCompile Include="CvEmphasisClasses.cpp" />
-    <ClCompile Include="CvEspionageClasses.cpp" />
     <ClCompile Include="CvFlavorManager.cpp" />
-    <ClCompile Include="CvFractal.cpp" />
-    <ClCompile Include="CvGame.cpp" />
-    <ClCompile Include="CvGameCoreDLL.cpp" />
+    <ClCompile Include="CvFractal.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="CvGame.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="CvGameCoreDLL.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvGameCoreEnumSerialization.cpp" />
     <ClCompile Include="CvGameCoreUtils.cpp" />
     <ClCompile Include="CvGameQueries.cpp" />
     <ClCompile Include="CvGameTextMgr.cpp" />
-    <ClCompile Include="CvGlobals.cpp" />
+    <ClCompile Include="CvGlobals.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvGoodyHuts.cpp" />
     <ClCompile Include="CvGrandStrategyAI.cpp" />
     <ClCompile Include="CvHomelandAI.cpp" />
     <ClCompile Include="CvImprovementClasses.cpp" />
-    <ClCompile Include="CvInfos.cpp" />
+    <ClCompile Include="CvInfos.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvInfosSerializationHelper.cpp" />
     <ClCompile Include="CvInternalGameCoreUtils.cpp" />
-    <ClCompile Include="CvMap.cpp" />
-    <ClCompile Include="CvMapGenerator.cpp" />
+    <ClCompile Include="CvMap.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="CvMapGenerator.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvMilitaryAI.cpp" />
     <ClCompile Include="CvMinorCivAI.cpp" />
     <ClCompile Include="CvNotificationClasses.cpp" />
     <ClCompile Include="CvNotifications.cpp" />
-    <ClCompile Include="CvPlayer.cpp" />
-    <ClCompile Include="CvPlayerAI.cpp" />
+    <ClCompile Include="CvPlayer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="CvPlayerAI.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvPlayerManager.cpp" />
-    <ClCompile Include="CvPlot.cpp" />
-    <ClCompile Include="CvPlotManager.cpp" />
+    <ClCompile Include="CvPlot.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvPolicyAI.cpp" />
     <ClCompile Include="CvPolicyClasses.cpp" />
     <ClCompile Include="CvPopupInfoSerialization.cpp" />
     <ClCompile Include="CvPopupReturn.cpp" />
     <ClCompile Include="CvPreGame.cpp" />
-    <ClCompile Include="CvProcessProductionAI.cpp" />
     <ClCompile Include="CvProjectClasses.cpp" />
     <ClCompile Include="CvProjectProductionAI.cpp" />
     <ClCompile Include="CvPromotionClasses.cpp" />
-    <ClCompile Include="CvRandom.cpp" />
-    <ClCompile Include="CvReligionClasses.cpp" />
+    <ClCompile Include="CvRandom.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvReplayInfo.cpp" />
     <ClCompile Include="CvReplayMessage.cpp" />
     <ClCompile Include="CvSiteEvaluationClasses.cpp" />
@@ -162,23 +186,40 @@
     <ClCompile Include="CvStructs.cpp" />
     <ClCompile Include="CvTacticalAI.cpp" />
     <ClCompile Include="CvTacticalAnalysisMap.cpp" />
-    <ClCompile Include="CvTeam.cpp" />
+    <ClCompile Include="CvTeam.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvTechAI.cpp" />
     <ClCompile Include="CvTechClasses.cpp" />
-    <ClCompile Include="CvTradeClasses.cpp" />
     <ClCompile Include="CvTraitClasses.cpp" />
     <ClCompile Include="CvTreasury.cpp" />
     <ClCompile Include="CvTypes.cpp" />
-    <ClCompile Include="CvUnit.cpp" />
+    <ClCompile Include="CvUnit.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Mod|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="CvUnitClasses.cpp" />
     <ClCompile Include="CvUnitCombat.cpp" />
     <ClCompile Include="CvUnitCycler.cpp" />
     <ClCompile Include="CvUnitMission.cpp" />
     <ClCompile Include="CvUnitMovement.cpp" />
     <ClCompile Include="CvUnitProductionAI.cpp" />
-    <ClCompile Include="CvVotingClasses.cpp" />
     <ClCompile Include="CvWonderProductionAI.cpp" />
     <ClCompile Include="CvWorldBuilderMapLoader.cpp" />
+    <ClCompile Include="Lua\CvLuaArea.cpp" />
+    <ClCompile Include="Lua\CvLuaArgsHandle.cpp" />
+    <ClCompile Include="Lua\CvLuaCity.cpp" />
+    <ClCompile Include="Lua\CvLuaDeal.cpp" />
+    <ClCompile Include="Lua\CvLuaEnums.cpp" />
+    <ClCompile Include="Lua\CvLuaFractal.cpp" />
+    <ClCompile Include="Lua\CvLuaGame.cpp" />
+    <ClCompile Include="Lua\CvLuaGameInfo.cpp" />
+    <ClCompile Include="Lua\CvLuaMap.cpp" />
+    <ClCompile Include="Lua\CvLuaPlayer.cpp" />
+    <ClCompile Include="Lua\CvLuaPlot.cpp" />
+    <ClCompile Include="Lua\CvLuaSupport.cpp" />
+    <ClCompile Include="Lua\CvLuaTeam.cpp" />
+    <ClCompile Include="Lua\CvLuaTeamTech.cpp" />
+    <ClCompile Include="Lua\CvLuaUnit.cpp" />
     <ClCompile Include="CvDllBuildInfo.cpp" />
     <ClCompile Include="CvDllBuildingInfo.cpp" />
     <ClCompile Include="CvDllCity.cpp" />
@@ -230,26 +271,8 @@
     <ClCompile Include="CvDllVictoryInfo.cpp" />
     <ClCompile Include="CvDllWorldBuilderMapLoader.cpp" />
     <ClCompile Include="CvDllWorldInfo.cpp" />
-    <ClCompile Include="Lua\CvLuaArea.cpp" />
-    <ClCompile Include="Lua\CvLuaArgsHandle.cpp" />
-    <ClCompile Include="Lua\CvLuaCity.cpp" />
-    <ClCompile Include="Lua\CvLuaDeal.cpp" />
-    <ClCompile Include="Lua\CvLuaEnums.cpp" />
-    <ClCompile Include="Lua\CvLuaFractal.cpp" />
-    <ClCompile Include="Lua\CvLuaGame.cpp" />
-    <ClCompile Include="Lua\CvLuaGameInfo.cpp" />
-    <ClCompile Include="Lua\CvLuaLeague.cpp" />
-    <ClCompile Include="Lua\CvLuaMap.cpp" />
-    <ClCompile Include="Lua\CvLuaPlayer.cpp" />
-    <ClCompile Include="Lua\CvLuaPlot.cpp" />
-    <ClCompile Include="Lua\CvLuaSupport.cpp" />
-    <ClCompile Include="Lua\CvLuaTeam.cpp" />
-    <ClCompile Include="Lua\CvLuaTeamTech.cpp" />
-    <ClCompile Include="Lua\CvLuaUnit.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="banned.h" />
-    <ClInclude Include="Custom\QuietDiplomacy.h" />
     <ClInclude Include="CvAchievementUnlocker.h" />
     <ClInclude Include="CvAdvisorCounsel.h" />
     <ClInclude Include="CvAdvisorRecommender.h" />
@@ -259,8 +282,6 @@
     <ClInclude Include="CvAStar.h" />
     <ClInclude Include="CvAStarNode.h" />
     <ClInclude Include="CvBarbarians.h" />
-    <ClInclude Include="CvBeliefClasses.h" />
-    <ClInclude Include="CvBitfield.h" />
     <ClInclude Include="CvBuilderTaskingAI.h" />
     <ClInclude Include="CvBuildingClasses.h" />
     <ClInclude Include="CvBuildingProductionAI.h" />
@@ -268,10 +289,9 @@
     <ClInclude Include="CvCityAI.h" />
     <ClInclude Include="CvCityCitizens.h" />
     <ClInclude Include="CvCityConnections.h" />
-    <ClInclude Include="CvCityManager.h" />
     <ClInclude Include="CvCitySpecializationAI.h" />
     <ClInclude Include="CvCityStrategyAI.h" />
-    <ClInclude Include="CvCultureClasses.h" />
+    <ClInclude Include="CvColor.h" />
     <ClInclude Include="CvDangerPlots.h" />
     <ClInclude Include="CvDatabaseUtility.h" />
     <ClInclude Include="CvDealAI.h" />
@@ -280,9 +300,12 @@
     <ClInclude Include="CvDiplomacyAI.h" />
     <ClInclude Include="CvDiplomacyAIEnums.h" />
     <ClInclude Include="CvDiplomacyRequests.h" />
+    <ClInclude Include="CvDLLInterfaceIFaceBase.h" />
+    <ClInclude Include="CvDLLScriptSystemIFaceBase.h" />
+    <ClInclude Include="CvDLLUtilityIFaceBase.h" />
+    <ClInclude Include="CvDLLXmlLoadUtil.h" />
     <ClInclude Include="CvEconomicAI.h" />
     <ClInclude Include="CvEmphasisClasses.h" />
-    <ClInclude Include="CvEspionageClasses.h" />
     <ClInclude Include="CvFlavorManager.h" />
     <ClInclude Include="CvFractal.h" />
     <ClInclude Include="CvGame.h" />
@@ -311,19 +334,15 @@
     <ClInclude Include="CvPlayerAI.h" />
     <ClInclude Include="CvPlayerManager.h" />
     <ClInclude Include="CvPlot.h" />
-    <ClInclude Include="CvPlotManager.h" />
-    <ClInclude Include="CvPoint.h" />
     <ClInclude Include="CvPolicyAI.h" />
     <ClInclude Include="CvPolicyClasses.h" />
     <ClInclude Include="CvPopupInfoSerialization.h" />
     <ClInclude Include="CvPopupReturn.h" />
     <ClInclude Include="CvPreGame.h" />
-    <ClInclude Include="CvProcessProductionAI.h" />
     <ClInclude Include="CvProjectClasses.h" />
     <ClInclude Include="CvProjectProductionAI.h" />
     <ClInclude Include="CvPromotionClasses.h" />
     <ClInclude Include="CvRandom.h" />
-    <ClInclude Include="CvReligionClasses.h" />
     <ClInclude Include="CvReplayInfo.h" />
     <ClInclude Include="CvReplayMessage.h" />
     <ClInclude Include="CvSiteEvaluationClasses.h" />
@@ -336,7 +355,6 @@
     <ClInclude Include="CvTeam.h" />
     <ClInclude Include="CvTechAI.h" />
     <ClInclude Include="CvTechClasses.h" />
-    <ClInclude Include="CvTradeClasses.h" />
     <ClInclude Include="CvTraitClasses.h" />
     <ClInclude Include="CvTreasury.h" />
     <ClInclude Include="CvTypes.h" />
@@ -347,10 +365,28 @@
     <ClInclude Include="CvUnitMission.h" />
     <ClInclude Include="CvUnitMovement.h" />
     <ClInclude Include="CvUnitProductionAI.h" />
-    <ClInclude Include="CvVotingClasses.h" />
     <ClInclude Include="CvWonderProductionAI.h" />
     <ClInclude Include="CvWorldBuilderMapLoader.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Lua\CvLuaArea.h" />
+    <ClInclude Include="Lua\CvLuaArgsHandle.h" />
+    <ClInclude Include="Lua\CvLuaArgTemplates.h" />
+    <ClInclude Include="Lua\CvLuaCity.h" />
+    <ClInclude Include="Lua\CvLuaDeal.h" />
+    <ClInclude Include="Lua\CvLuaEnums.h" />
+    <ClInclude Include="Lua\CvLuaFractal.h" />
+    <ClInclude Include="Lua\CvLuaGame.h" />
+    <ClInclude Include="Lua\CvLuaGameInfo.h" />
+    <ClInclude Include="Lua\CvLuaMap.h" />
+    <ClInclude Include="Lua\CvLuaMethodWrapper.h" />
+    <ClInclude Include="Lua\CvLuaPlayer.h" />
+    <ClInclude Include="Lua\CvLuaPlot.h" />
+    <ClInclude Include="Lua\CvLuaScopedInstance.h" />
+    <ClInclude Include="Lua\CvLuaStaticInstance.h" />
+    <ClInclude Include="Lua\CvLuaSupport.h" />
+    <ClInclude Include="Lua\CvLuaTeam.h" />
+    <ClInclude Include="Lua\CvLuaTeamTech.h" />
+    <ClInclude Include="Lua\CvLuaUnit.h" />
     <ClInclude Include="CvDllBuildInfo.h" />
     <ClInclude Include="CvDllBuildingInfo.h" />
     <ClInclude Include="CvDllCity.h" />
@@ -400,28 +436,9 @@
     <ClInclude Include="CvDllUnit.h" />
     <ClInclude Include="CvDllUnitCombatClassInfo.h" />
     <ClInclude Include="CvDllUnitInfo.h" />
-    <ClInclude Include="CvDllVersion.h" />
     <ClInclude Include="CvDllVictoryInfo.h" />
     <ClInclude Include="CvDllWorldBuilderMapLoader.h" />
     <ClInclude Include="CvDllWorldInfo.h" />
-    <ClInclude Include="Lua\CvLuaArea.h" />
-    <ClInclude Include="Lua\CvLuaArgsHandle.h" />
-    <ClInclude Include="Lua\CvLuaCity.h" />
-    <ClInclude Include="Lua\CvLuaDeal.h" />
-    <ClInclude Include="Lua\CvLuaEnums.h" />
-    <ClInclude Include="Lua\CvLuaFractal.h" />
-    <ClInclude Include="Lua\CvLuaGame.h" />
-    <ClInclude Include="Lua\CvLuaGameInfo.h" />
-    <ClInclude Include="Lua\CvLuaLeague.h" />
-    <ClInclude Include="Lua\CvLuaMap.h" />
-    <ClInclude Include="Lua\CvLuaPlayer.h" />
-    <ClInclude Include="Lua\CvLuaPlot.h" />
-    <ClInclude Include="Lua\CvLuaScopedIndirectInstance.h" />
-    <ClInclude Include="Lua\CvLuaScopedInstance.h" />
-    <ClInclude Include="Lua\CvLuaSupport.h" />
-    <ClInclude Include="Lua\CvLuaTeam.h" />
-    <ClInclude Include="Lua\CvLuaTeamTech.h" />
-    <ClInclude Include="Lua\CvLuaUnit.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CvGameCoreDLL.rc" />
