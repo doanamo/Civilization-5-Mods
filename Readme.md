@@ -6,14 +6,14 @@ Civilization V Mods
 
 ![](Docs/QuickTurns.jpg)
 
-Intelligently toggles Quick Movement/Combat during AI turns, which results in significantly reduced time you will spend waiting and watching what the AI does instead of actually playing, especially in the late game. Only important AI unit actions, relevant to the player are shown. Replacement for playing with permanently enabled Quick Movement/Combat or in the Strategic 2D view when turn times slow down to a crawl. You can now enjoy the cool nuclear explosions and most* unit animations without major compromises!
+Intelligently toggles Quick Movement/Combat during AI turns, which results in significantly reduced time you will spend waiting and watching what the AI does instead of actually playing, especially in the late game. Only important AI unit actions, relevant to the player are shown. Replacement for playing with permanently enabled Quick Movement/Combat or in the Strategic 2D view when turn times slow down to a crawl. You can now enjoy the cool nuclear explosions and most unit animations without major compromises!
 
 [Quiet Diplomacy](http://steamcommunity.com/sharedfiles/filedetails/?id=309175632)
 ----
 
 ![](Docs/QuietDiplomacy.jpg)
 
-Replaces some of the annoying leader screen popups (where decisions don't have any effect on the game) with notifications above the minimap. This results in much faster AI turns since you don't have to click them to resume turn processing.
+Replaces some of the annoying leader screen popups with notifications above the minimap (where decisions don't have any effect on the game). This results in much faster AI turns since you will not have to dimiss any conversations to resume the turn processing.
 
 License
 ====
